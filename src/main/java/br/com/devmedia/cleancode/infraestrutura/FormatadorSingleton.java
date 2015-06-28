@@ -1,4 +1,4 @@
-package br.com.devmedia.cleancode;
+package br.com.devmedia.cleancode.infraestrutura;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

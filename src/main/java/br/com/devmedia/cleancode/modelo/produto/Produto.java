@@ -1,15 +1,18 @@
-package br.com.devmedia.cleancode;
+package br.com.devmedia.cleancode.modelo.produto;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  *
  */
+@Entity
 public class Produto implements Serializable {
 
     private static final long serialVersionUID = -4715596198193856107L;
@@ -39,6 +42,20 @@ public class Produto implements Serializable {
         this.nome = nome;
         this.descricao = descricao;
         this.preco = preco;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Produto){
+            final Produto other = (Produto) obj;
+            return Objects.equals(this.id, other.id);
+        }
+        return false;
     }
 
     public void setId(Integer id) {

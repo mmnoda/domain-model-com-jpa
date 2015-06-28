@@ -1,15 +1,18 @@
-package br.com.devmedia.cleancode;
+package br.com.devmedia.cleancode.modelo.pedido;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Version;
+import br.com.devmedia.cleancode.modelo.produto.Produto;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Objects;
 
 /**
  *
  */
+@Entity
 public class ItemPedido implements Serializable {
 
     private static final long serialVersionUID = -1312001855343698639L;
@@ -21,14 +24,23 @@ public class ItemPedido implements Serializable {
     @Version
     private Integer version;
 
+    @ManyToOne
+    @JoinColumn(name = "id_pedido")
+    @NotNull
     private Pedido pedido;
 
+    @ManyToOne
+    @JoinColumn(name = "id_produto")
+    @NotNull
     private Produto produto;
 
+    @NotNull
     private BigInteger quantidade;
 
+    @NotNull
     private BigDecimal valorUnitario;
 
+    @NotNull
     private BigDecimal valorTotal;
 
     ItemPedido() {
@@ -36,13 +48,27 @@ public class ItemPedido implements Serializable {
 
     public ItemPedido(Pedido pedido, Produto produto, BigInteger quantidade) {
         this.pedido = pedido;
-        this.produto = produto;
         this.quantidade = quantidade;
-        valorUnitario = produto.getPreco();
-        valorTotal = valorUnitario.multiply(new BigDecimal(quantidade));
+        this.produto = produto;
+        this.valorUnitario = produto.getPreco();
+        calcularValorTotal();
     }
 
-    public void calcularValorTotal() {
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ItemPedido) {
+            final ItemPedido other = (ItemPedido) obj;
+            return Objects.equals(this.id, other.id);
+        }
+        return false;
+    }
+
+    private void calcularValorTotal() {
         valorTotal = valorUnitario.multiply(new BigDecimal(quantidade));
     }
 
@@ -56,14 +82,6 @@ public class ItemPedido implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Integer getVersion() {
-        return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
     }
 
     public Pedido getPedido() {
@@ -84,6 +102,7 @@ public class ItemPedido implements Serializable {
 
     public void setQuantidade(BigInteger quantidade) {
         this.quantidade = quantidade;
+        calcularValorTotal();
     }
 
     public BigDecimal getValorUnitario() {
