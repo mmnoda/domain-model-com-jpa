@@ -1,14 +1,19 @@
 package br.com.devmedia.cleancode.modelo.cliente;
 
+import br.com.devmedia.cleancode.infraestrutura.DateTimeUtils;
 import br.com.devmedia.cleancode.modelo.pedido.Pedido;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
+
+import static javax.persistence.TemporalType.DATE;
 
 /**
  *
@@ -30,6 +35,10 @@ public class Cliente implements Serializable, DescontoCliente {
 
     @NotNull
     private String nome;
+
+    @NotNull
+    @Temporal(DATE)
+    private LocalDate nascimento;
 
     @OneToMany(mappedBy = "cliente")
     Set<Pedido> pedidos = new LinkedHashSet<>();
@@ -73,6 +82,22 @@ public class Cliente implements Serializable, DescontoCliente {
         return -1;
     }
 
+    public void setNome(String nome) {
+        if (nome == null) {
+            return;
+        }
+        this.nome = nome.trim().toUpperCase();
+    }
+
+    public boolean isMaiorIdade() {
+        return getIdade() >= 18;
+    }
+
+    public int getIdade() {
+        Period periodo = Period.between(nascimento, DateTimeUtils.getInstance().newLocalDate());
+        return periodo.getYears();
+    }
+
     public Integer getId() {
         return id;
     }
@@ -101,15 +126,19 @@ public class Cliente implements Serializable, DescontoCliente {
         return nome;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
     public Set<Pedido> getPedidos() {
         return pedidos;
     }
 
     public void setPedidos(Set<Pedido> pedidos) {
         this.pedidos = pedidos;
+    }
+
+    public LocalDate getNascimento() {
+        return nascimento;
+    }
+
+    public void setNascimento(LocalDate nascimento) {
+        this.nascimento = nascimento;
     }
 }
