@@ -1,25 +1,18 @@
 package br.com.devmedia.cleancode.modelo.pedido;
 
-import br.com.devmedia.cleancode.infraestrutura.ArredondamentoConstants;
+import br.com.devmedia.cleancode.modelo.Dinheiro;
 import br.com.devmedia.cleancode.modelo.cliente.Cliente;
-import org.assertj.core.api.AbstractBigDecimalAssert;
+import br.com.devmedia.cleancode.modelo.cliente.TipoCliente;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.stubbing.OngoingStubbing;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static br.com.devmedia.cleancode.infraestrutura.ArredondamentoConstants.ARREDONDAMENTO_PADRAO;
-import static br.com.devmedia.cleancode.infraestrutura.ArredondamentoConstants.CASAS_DECIMAIS;
-import static br.com.devmedia.cleancode.modelo.cliente.DescontoCliente.CLIENTE_BRONZE;
-import static br.com.devmedia.cleancode.modelo.cliente.DescontoCliente.CLIENTE_OURO;
-import static br.com.devmedia.cleancode.modelo.cliente.DescontoCliente.CLIENTE_PRATA;
-import static br.com.devmedia.cleancode.modelo.pedido.Pedido.ABERTO;
-import static br.com.devmedia.cleancode.modelo.pedido.Pedido.CANCELADO;
-import static br.com.devmedia.cleancode.modelo.pedido.Pedido.FATURADO;
+import static br.com.devmedia.cleancode.modelo.cliente.TipoCliente.*;
+import static br.com.devmedia.cleancode.modelo.pedido.Pedido.newPedido;
+import static br.com.devmedia.cleancode.modelo.pedido.StatusPedido.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -32,24 +25,26 @@ public class PedidoTest {
 
     private Cliente cliente = mock(Cliente.class);
 
-    private final BigDecimal valorTotalItem1 = BigDecimal.valueOf(499).setScale(CASAS_DECIMAIS, ARREDONDAMENTO_PADRAO);
-    private final BigDecimal valorTotalItem2 = BigDecimal.valueOf(2000).setScale(CASAS_DECIMAIS, ARREDONDAMENTO_PADRAO);
-    private final BigDecimal valorTotalItem3 = BigDecimal.valueOf(600).setScale(CASAS_DECIMAIS, ARREDONDAMENTO_PADRAO);
-    private final BigDecimal valorTotalItem4 = BigDecimal.valueOf(3000).setScale(CASAS_DECIMAIS, ARREDONDAMENTO_PADRAO);
-    private final BigDecimal somaItens1e2 = valorTotalItem1.add(valorTotalItem2);
-    private final BigDecimal somaItens1e2e3 = valorTotalItem1.add(valorTotalItem2).add(valorTotalItem3);
-    private final BigDecimal somaTodosItens = somaItens1e2e3.add(valorTotalItem4);
+    private final Dinheiro valorTotalItem1 = Dinheiro.valueOf(499);
+    private final Dinheiro valorTotalItem2 = Dinheiro.valueOf(2000);
+    private final Dinheiro valorTotalItem3 = Dinheiro.valueOf(600);
+    private final Dinheiro valorTotalItem4 = Dinheiro.valueOf(3000);
+    private final Dinheiro somaItens1e2 = valorTotalItem1.add(valorTotalItem2);
+    private final Dinheiro somaItens1e2e3 = valorTotalItem1.add(valorTotalItem2).add(valorTotalItem3);
+    private final Dinheiro somaTodosItens = somaItens1e2e3.add(valorTotalItem4);
 
     private ItemPedido item1 = mock(ItemPedido.class);
     private ItemPedido item2 = mock(ItemPedido.class);
     private ItemPedido item3 = mock(ItemPedido.class);
     private ItemPedido item4 = mock(ItemPedido.class);
 
+    private NumeroPedido numero = mock(NumeroPedido.class);
+
     private List<ItemPedido> itens;
 
     @Before
     public void setUp() {
-        pedido = new Pedido(cliente);
+        pedido = newPedido(cliente, numero);
         mockValoresItemPedido();
     }
 
@@ -60,7 +55,7 @@ public class PedidoTest {
         mockValoresItemPedido(item4, valorTotalItem4);
     }
 
-    private void mockValoresItemPedido(ItemPedido item, BigDecimal valorTotalItem) {
+    private void mockValoresItemPedido(ItemPedido item, Dinheiro valorTotalItem) {
         when(item.getValorTotal()).thenReturn(valorTotalItem);
         when(item.getValorUnitario()).thenReturn(valorTotalItem);
     }
@@ -85,13 +80,13 @@ public class PedidoTest {
 
     private void assertPedidoDiferente() {
         Pedido outroDiferente = new Pedido();
-        outroDiferente.setId(2);
+        outroDiferente.numero = mock(NumeroPedido.class);
         assertThat(pedido).isNotEqualTo(outroDiferente);
     }
 
     private void assertPedidoIgual() {
         Pedido outroIgual = new Pedido();
-        outroIgual.setId(1);
+        outroIgual.numero = numero;
         assertThat(pedido).isEqualTo(outroIgual);
     }
 
@@ -104,7 +99,7 @@ public class PedidoTest {
     @Test
     public void deve_remover_itens() {
         adicionarItens1e2AoPedido();
-        pedido.removerItem(item2);
+        pedido.remover(item2);
         assertThat(pedido.getItens()).hasSize(1).contains(item1).doesNotContain(item2, item3);
     }
 
@@ -121,7 +116,7 @@ public class PedidoTest {
     }
 
     private void mockCalcularTipoClienteComRetornoVazio() {
-        when(cliente.calcularTipoCliente()).thenReturn(null);
+        when(cliente.calcularTipoCliente()).thenReturn(SEM_CLASSIFICACAO);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -186,7 +181,7 @@ public class PedidoTest {
     public void deve_aplicar_desconto_ZERO_para_cliente_tipo_BRONZE_com_pedido_inferior_a_500() {
         setEstadoPedidoAberto();
         adicionarSomenteItem1AoPedido();
-        mockCalcularTipoClienteComo(CLIENTE_BRONZE);
+        mockCalcularTipoClienteComo(BRONZE);
         faturar();
         verificarExecucaoCalcularTipoCliente();
         verificarExecucaoGetValorTotalSomenteDo(item1);
@@ -199,77 +194,77 @@ public class PedidoTest {
     public void deve_aplicar_desconto_de_3_porcento_para_cliente_tipo_BRONZE_com_pedido_acima_de_500() {
         setEstadoPedidoAberto();
         adicionarTodosItensAoPedido();
-        mockCalcularTipoClienteComo(CLIENTE_BRONZE);
+        mockCalcularTipoClienteComo(BRONZE);
         faturar();
         verificarExecucaoCalcularTipoCliente();
         verificarExecucaoGetValorTotalDosItens1e2e3();
         assertValorTotalItensPedidoIgualAoValorDe(somaTodosItens);
-        assertDescontoPedidoIgualAoValorDe(BigDecimal.valueOf(182.97));
-        assertValorTotalFinalPedidoIgualAoValorDe(BigDecimal.valueOf(5916.03));
+        assertDescontoPedidoIgualAoValorDe(Dinheiro.valueOf(182.97));
+        assertValorTotalFinalPedidoIgualAoValorDe(Dinheiro.valueOf(5916.03));
     }
 
     @Test
     public void deve_aplicar_desconto_de_3_porcento_para_cliente_tipo_PRATA_com_pedido_inferior_a_3000() {
         setEstadoPedidoAberto();
         adicionarItens1e2AoPedido();
-        mockCalcularTipoClienteComo(CLIENTE_PRATA);
+        mockCalcularTipoClienteComo(PRATA);
         faturar();
         verificarExecucaoCalcularTipoCliente();
         verificarExecucaoGetValorTotalDosItens1e2();
         assertValorTotalItensPedidoIgualAoValorDe(somaItens1e2);
-        assertDescontoPedidoIgualAoValorDe(BigDecimal.valueOf(74.97));
-        assertValorTotalFinalPedidoIgualAoValorDe(BigDecimal.valueOf(2424.03));
+        assertDescontoPedidoIgualAoValorDe(Dinheiro.valueOf(74.97));
+        assertValorTotalFinalPedidoIgualAoValorDe(Dinheiro.valueOf(2424.03));
     }
 
     @Test
     public void deve_aplicar_desconto_de_5_porcento_para_cliente_tipo_PRATA_com_pedido_superior_a_3000() {
         setEstadoPedidoAberto();
         adicionarItens1e2e3AoPedido();
-        mockCalcularTipoClienteComo(CLIENTE_PRATA);
+        mockCalcularTipoClienteComo(PRATA);
         faturar();
         verificarExecucaoCalcularTipoCliente();
         verificarExecucaoGetValorTotalDosItens1e2e3();
         assertValorTotalItensPedidoIgualAoValorDe(somaItens1e2e3);
-        assertDescontoPedidoIgualAoValorDe(BigDecimal.valueOf(154.95));
-        assertValorTotalFinalPedidoIgualAoValorDe(BigDecimal.valueOf(2944.05));
+        assertDescontoPedidoIgualAoValorDe(Dinheiro.valueOf(154.95));
+        assertValorTotalFinalPedidoIgualAoValorDe(Dinheiro.valueOf(2944.05));
     }
 
     @Test
     public void deve_aplicar_desconto_de_8_porcento_para_cliente_tipo_PRATA_com_pedido_superior_a_5000() {
         setEstadoPedidoAberto();
         adicionarTodosItensAoPedido();
-        mockCalcularTipoClienteComo(CLIENTE_PRATA);
+        mockCalcularTipoClienteComo(PRATA);
         faturar();
         verificarExecucaoCalcularTipoCliente();
         verificarExecucaoGetValorTotalDeTodosItens();
         assertValorTotalItensPedidoIgualAoValorDe(somaTodosItens);
-        assertDescontoPedidoIgualAoValorDe(BigDecimal.valueOf(487.92));
-        assertValorTotalFinalPedidoIgualAoValorDe(BigDecimal.valueOf(5611.08));
+        assertDescontoPedidoIgualAoValorDe(Dinheiro.valueOf(487.92));
+        assertValorTotalFinalPedidoIgualAoValorDe(Dinheiro.valueOf(5611.08));
     }
 
     @Test
     public void deve_aplicar_desconto_de_10_porcento_para_cliente_tipo_OURO_com_pedido_inferior_a_500() {
         setEstadoPedidoAberto();
         adicionarSomenteItem1AoPedido();
-        mockCalcularTipoClienteComo(CLIENTE_OURO);
+        mockCalcularTipoClienteComo(OURO);
         faturar();
         verificarExecucaoCalcularTipoCliente();
         verificarExecucaoGetValorTotalSomenteDo(item1);
         assertValorTotalItensPedidoIgualAoValorItem1();
-        assertDescontoPedidoIgualAoValorDe(BigDecimal.valueOf(49.90));
-        assertValorTotalFinalPedidoIgualAoValorDe(BigDecimal.valueOf(449.10));
+        assertDescontoPedidoIgualAoValorDe(Dinheiro.valueOf(49.90));
+        assertValorTotalFinalPedidoIgualAoValorDe(Dinheiro.valueOf(449.10));
     }
 
-    private void assertDescontoPedidoIgualAoValorDe(BigDecimal desconto) {
-        assertThat(pedido.getDesconto()).isEqualTo(desconto.setScale(CASAS_DECIMAIS, ARREDONDAMENTO_PADRAO));
+    private void assertDescontoPedidoIgualAoValorDe(Dinheiro desconto) {
+        assertThat(pedido.getDesconto()).isEqualTo(desconto);
     }
 
-    private void assertValorTotalItensPedidoIgualAoValorDe(BigDecimal valorTotalItens) {
-        assertThat(pedido.getValorTotalItens()).isEqualTo(valorTotalItens.setScale(CASAS_DECIMAIS, ARREDONDAMENTO_PADRAO));
+    private void assertValorTotalItensPedidoIgualAoValorDe(Dinheiro valorTotalItens) {
+        assertThat(pedido.getValorTotalItens()).isEqualTo(valorTotalItens);
     }
 
-    private Integer verificarExecucaoCalcularTipoCliente() {
-        return verify(cliente, only()).calcularTipoCliente();
+    private void verificarExecucaoCalcularTipoCliente() {
+        verify(cliente, only()).calcularTipoCliente();
     }
 
     private void verificarExecucaoGetValorTotalDeTodosItens() {
@@ -277,12 +272,12 @@ public class PedidoTest {
         verificarExecucaoGetValorTotalSomenteDo(item4);
     }
 
-    private AbstractBigDecimalAssert<?> assertValorTotalFinalIgualASomaDeTodosOsItens() {
-        return assertThat(pedido.getValorTotalFinal()).isEqualTo(somaTodosItens);
+    private void assertValorTotalFinalIgualASomaDeTodosOsItens() {
+        assertThat(pedido.getValorTotalFinal()).isEqualTo(somaTodosItens);
     }
 
-    private AbstractBigDecimalAssert<?> assertDescontoPedidoZero() {
-        return assertThat(pedido.getDesconto()).isEqualTo(BigDecimal.ZERO.setScale(CASAS_DECIMAIS, ARREDONDAMENTO_PADRAO));
+    private void assertDescontoPedidoZero() {
+        assertThat(pedido.getDesconto()).isEqualTo(Dinheiro.ZERO);
     }
 
     private void verificarExecucaoGetValorTotalDosItens1e2() {
@@ -318,19 +313,19 @@ public class PedidoTest {
         itens.add(item4);
     }
 
-    private void assertValorTotalFinalPedidoIgualAoValorDe(BigDecimal valorTotalItem1) {
-        assertThat(pedido.getValorTotalFinal()).isEqualTo(valorTotalItem1.setScale(CASAS_DECIMAIS, ARREDONDAMENTO_PADRAO));
+    private void assertValorTotalFinalPedidoIgualAoValorDe(Dinheiro valorTotalItem1) {
+        assertThat(pedido.getValorTotalFinal()).isEqualTo(valorTotalItem1);
     }
 
     private void assertValorTotalItensPedidoIgualAoValorItem1() {
-        assertValorTotalItensPedidoIgualAoValorDe(valorTotalItem1.setScale(CASAS_DECIMAIS, ARREDONDAMENTO_PADRAO));
+        assertValorTotalItensPedidoIgualAoValorDe(valorTotalItem1);
     }
 
     private void verificarExecucaoGetValorTotalSomenteDo(ItemPedido item) {
         verify(item).getValorTotal();
     }
 
-    private void mockCalcularTipoClienteComo(int tipo) {
+    private void mockCalcularTipoClienteComo(TipoCliente tipo) {
         when(cliente.calcularTipoCliente()).thenReturn(tipo);
     }
 }

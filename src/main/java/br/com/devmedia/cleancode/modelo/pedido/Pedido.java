@@ -1,20 +1,20 @@
 package br.com.devmedia.cleancode.modelo.pedido;
 
-import br.com.devmedia.cleancode.modelo.cliente.DescontoCliente;
 import br.com.devmedia.cleancode.infraestrutura.FormatadorSingleton;
+import br.com.devmedia.cleancode.modelo.Dinheiro;
+import br.com.devmedia.cleancode.modelo.Percentual;
 import br.com.devmedia.cleancode.modelo.cliente.Cliente;
+import br.com.devmedia.cleancode.modelo.cliente.DescontoCliente;
+import br.com.devmedia.cleancode.modelo.cliente.TipoCliente;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-import static br.com.devmedia.cleancode.infraestrutura.ArredondamentoConstants.ARREDONDAMENTO_PADRAO;
-import static br.com.devmedia.cleancode.infraestrutura.ArredondamentoConstants.CASAS_DECIMAIS;
+import static br.com.devmedia.cleancode.modelo.pedido.StatusPedido.*;
 
 /**
  */
@@ -23,26 +23,31 @@ public class Pedido implements Serializable {
 
     private static final long serialVersionUID = -7709238927106303434L;
 
-    public static final int ABERTO = 0;
-    public static final int CANCELADO = 1;
-    public static final int FATURADO = 2;
-
     @Id
     @GeneratedValue
     private Integer id;
 
+    @Version
+    Integer version;
+
+    @OneToOne
+    @JoinColumn(unique = true)
+    @NotNull
+    NumeroPedido numero;
+
     @ManyToOne
     @JoinColumn(name = "id_cliente")
+    @NotNull
     private Cliente cliente;
 
     @NotNull
-    Integer estado;
+    StatusPedido estado;
 
-    private BigDecimal valorTotalItens;
+    private Dinheiro valorTotalItens;
 
-    private BigDecimal desconto;
+    private Dinheiro desconto;
 
-    private BigDecimal valorTotalFinal;
+    private Dinheiro valorTotalFinal;
 
     @OneToMany(mappedBy = "pedido")
     List<ItemPedido> itens;
@@ -50,28 +55,33 @@ public class Pedido implements Serializable {
     protected Pedido() {
     }
 
-    public Pedido(Cliente cliente) {
+    private Pedido(Cliente cliente, NumeroPedido numero) {
         this.cliente = cliente;
+        this.numero = numero;
         inicializar();
+    }
+
+    public static Pedido newPedido(Cliente cliente, NumeroPedido numero) {
+        return new Pedido(cliente, numero);
     }
 
     private void inicializar() {
         estado = ABERTO;
-        valorTotalItens = BigDecimal.ZERO;
-        desconto = BigDecimal.ZERO.setScale(CASAS_DECIMAIS, ARREDONDAMENTO_PADRAO);
+        valorTotalItens = Dinheiro.ZERO;
+        desconto = Dinheiro.ZERO;
         itens = new LinkedList<>();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(numero);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Pedido) {
             final Pedido other = (Pedido) obj;
-            return Objects.equals(this.id, other.id);
+            return Objects.equals(this.numero, other.numero);
         }
         return false;
     }
@@ -90,7 +100,7 @@ public class Pedido implements Serializable {
         throw new IllegalStateException("Os itens do pedido não pode ser alterado");
     }
 
-    public Pedido removerItem(ItemPedido item) {
+    public Pedido remover(ItemPedido item) {
         if (estado == ABERTO) {
             itens.remove(item);
             calcularValorTotalItens();
@@ -102,42 +112,14 @@ public class Pedido implements Serializable {
 
     private void aplicarDesconto() {
         if (estado == ABERTO) {
+            final TipoCliente tipoCliente = cliente.calcularTipoCliente();
 
-            final Integer tipoCliente = cliente.calcularTipoCliente();
-
-            if (tipoCliente == null) {
-                return;
-            }
-
-            final BigDecimal _100 = new BigDecimal(100);
-            BigDecimal percentualDesconto;
-            switch (tipoCliente) {
-                case DescontoCliente.CLIENTE_BRONZE:
-                    percentualDesconto = valorTotalItens.compareTo(DescontoCliente.QUINHENTOS) >= 0 ?
-                            DescontoCliente._3_PORCENTO : BigDecimal.ZERO;
-                    break;
-                case DescontoCliente.CLIENTE_PRATA:
-                    percentualDesconto = valorTotalItens.compareTo(DescontoCliente.TRES_MIL) >= 0 ?
-                            DescontoCliente._5_PORCENTO : DescontoCliente._3_PORCENTO;
-
-                    if (possuiItemComValorMaiorOuIgualQue3000()) {
-                        percentualDesconto = percentualDesconto.add(DescontoCliente._3_PORCENTO);
-                    }
-
-                    break;
-                case DescontoCliente.CLIENTE_OURO:
-                    percentualDesconto = DescontoCliente._10_PORCENTO;
-                    break;
-                default:
-                    throw new IllegalArgumentException("Tipo Cliente Inválido");
-            }
-
-            desconto = valorTotalItens.multiply(percentualDesconto).divide(_100, RoundingMode.HALF_EVEN).
-                    setScale(CASAS_DECIMAIS, ARREDONDAMENTO_PADRAO);
+            Percentual percentualDesconto = tipoCliente.calcularPercentualDesconto(this);
+            desconto = percentualDesconto.calcular(valorTotalItens);
         }
     }
 
-    private boolean possuiItemComValorMaiorOuIgualQue3000() {
+     public boolean possuiItemComValorMaiorOuIgualQue3000() {
         for (ItemPedido item : itens) {
             if (item.getValorUnitario().compareTo(DescontoCliente.TRES_MIL) >= 0) {
                 return true;
@@ -151,7 +133,7 @@ public class Pedido implements Serializable {
     }
 
     private void calcularValorTotalItens() {
-        valorTotalItens = BigDecimal.ZERO;
+        valorTotalItens = Dinheiro.ZERO;
         for (ItemPedido item : itens) {
             valorTotalItens = valorTotalItens.add(item.getValorTotal());
         }
@@ -186,7 +168,7 @@ public class Pedido implements Serializable {
     }
 
     public String getValorTotalItensAsString() {
-        return FormatadorSingleton.getInstance().formatar(valorTotalItens);
+        return FormatadorSingleton.INSTANCE.formatar(valorTotalItens.toBigDecimal());
     }
 
     public Cliente getCliente() {
@@ -197,27 +179,27 @@ public class Pedido implements Serializable {
         this.cliente = cliente;
     }
 
-    public BigDecimal getValorTotalItens() {
+    public Dinheiro getValorTotalItens() {
         return valorTotalItens;
     }
 
-    public void setValorTotalItens(BigDecimal valorTotalItens) {
+    public void setValorTotalItens(Dinheiro valorTotalItens) {
         this.valorTotalItens = valorTotalItens;
     }
 
-    public BigDecimal getDesconto() {
+    public Dinheiro getDesconto() {
         return desconto;
     }
 
-    public void setDesconto(BigDecimal desconto) {
+    public void setDesconto(Dinheiro desconto) {
         this.desconto = desconto;
     }
 
-    public BigDecimal getValorTotalFinal() {
+    public Dinheiro getValorTotalFinal() {
         return valorTotalFinal;
     }
 
-    public void setValorTotalFinal(BigDecimal valorTotalFinal) {
+    public void setValorTotalFinal(Dinheiro valorTotalFinal) {
         this.valorTotalFinal = valorTotalFinal;
     }
 
@@ -229,11 +211,16 @@ public class Pedido implements Serializable {
         this.itens = itens;
     }
 
-    public Integer getEstado() {
+    public StatusPedido getEstado() {
         return estado;
     }
 
-    public void setEstado(Integer estado) {
+    public void setEstado(StatusPedido estado) {
         this.estado = estado;
     }
+
+    public NumeroPedido getNumero() {
+        return numero;
+    }
+
 }

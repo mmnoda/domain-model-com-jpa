@@ -7,27 +7,12 @@ import java.text.DecimalFormat;
 /**
  *
  */
-public class FormatadorSingleton {
+public enum FormatadorSingleton {
+    INSTANCE;
 
     public final String FORMATO_DUAS_CASAS_DECIMAIS = "###,###,##0.00";
 
     public final String FORMATO_INTEIRO = "###,###,##0";
-
-    private static FormatadorSingleton instance;
-
-    private FormatadorSingleton() {
-    }
-
-    public static FormatadorSingleton getInstance() {
-        if (instance == null) {
-            synchronized (FormatadorSingleton.class) {
-                if (instance == null) {
-                    instance = new FormatadorSingleton();
-                }
-            }
-        }
-        return instance;
-    }
 
     public String formatar(BigDecimal valor) {
         DecimalFormat numberFormat = new DecimalFormat(FORMATO_DUAS_CASAS_DECIMAIS);

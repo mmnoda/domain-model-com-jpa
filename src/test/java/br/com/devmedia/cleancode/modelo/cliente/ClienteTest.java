@@ -1,20 +1,21 @@
 package br.com.devmedia.cleancode.modelo.cliente;
 
 import br.com.devmedia.cleancode.infraestrutura.DateTimeUtils;
+import br.com.devmedia.cleancode.modelo.Dinheiro;
+import br.com.devmedia.cleancode.modelo.Nome;
 import br.com.devmedia.cleancode.modelo.pedido.Pedido;
+import br.com.devmedia.cleancode.modelo.pedido.StatusPedido;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.stubbing.OngoingStubbing;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import static br.com.devmedia.cleancode.modelo.cliente.DescontoCliente.*;
-import static br.com.devmedia.cleancode.modelo.pedido.Pedido.*;
+import static br.com.devmedia.cleancode.modelo.cliente.TipoCliente.*;
+import static br.com.devmedia.cleancode.modelo.pedido.StatusPedido.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -25,7 +26,7 @@ public class ClienteTest {
 
     private Cliente cliente;
 
-    private final DateTimeUtils dateTimeUtils = DateTimeUtils.getInstance();
+    private final DateTimeUtils dateTimeUtils = DateTimeUtils.INSTANCE;
 
     private Pedido pedidoFaturado1 = mock(Pedido.class);
     private Pedido pedidoFaturado2 = mock(Pedido.class);
@@ -33,6 +34,7 @@ public class ClienteTest {
     private Pedido pedidoAberto = mock(Pedido.class);
 
     private Set<Pedido> pedidos = new LinkedHashSet<>();
+    private final Cpf cpfQualquer = Cpf.valueOf("16738530722");
 
     @Before
     public void setUp() {
@@ -48,7 +50,7 @@ public class ClienteTest {
         adicionarPedido(pedidoAberto, ABERTO);
     }
 
-    private void adicionarPedido(Pedido pedidoMock, int faturado) {
+    private void adicionarPedido(Pedido pedidoMock, StatusPedido faturado) {
         when(pedidoMock.getEstado()).thenReturn(faturado);
         pedidos.add(pedidoMock);
     }
@@ -62,36 +64,36 @@ public class ClienteTest {
 
     @Test
     public void deve_ser_igual_ao_proprio() {
-        cliente.setId(1);
+        cliente.setCpf(cpfQualquer);
         assertThat(cliente).isEqualTo(cliente);
     }
 
     @Test
     public void deve_implementar_equals_consistente() {
-        cliente.setId(1);
+        cliente.setCpf(cpfQualquer);
         assertClienteIgual();
         assertClienteDiferente();
     }
 
     @Test
     public void deve_calcular_tipo_de_cliente_BRONZE_com_base_em_seus_pedidos_faturados() {
-        mockValorTotalDoPedidoFaturado1Como350();
-        mockValorTotalDoPedidoFaturado2Como(BigDecimal.valueOf(150));
-        assertThat(cliente.calcularTipoCliente()).isNotNull().isEqualTo(CLIENTE_BRONZE);
+        mockValorTotalDoPedidoFaturado1Como(Dinheiro.valueOf(350));
+        mockValorTotalDoPedidoFaturado2Como(Dinheiro.valueOf(150));
+        assertTipoClienteIgualA(BRONZE);
     }
 
     @Test
     public void deve_calcular_tipo_de_cliente_PRATA_com_base_em_seus_pedidos_faturados() {
-        mockValorTotalDoPedidoFaturado1Como350();
-        mockValorTotalDoPedidoFaturado2Como(BigDecimal.valueOf(2650));
-        assertThat(cliente.calcularTipoCliente()).isNotNull().isEqualTo(CLIENTE_PRATA);
+        mockValorTotalDoPedidoFaturado1Como(Dinheiro.valueOf(350));
+        mockValorTotalDoPedidoFaturado2Como(Dinheiro.valueOf(2650));
+        assertTipoClienteIgualA(PRATA);
     }
 
     @Test
     public void deve_calcular_tipo_de_cliente_OURO_com_base_em_seus_pedidos_faturados() {
-        when(pedidoFaturado1.getValorTotalFinal()).thenReturn(BigDecimal.valueOf(3500));
-        mockValorTotalDoPedidoFaturado2Como(BigDecimal.valueOf(7500));
-        assertThat(cliente.calcularTipoCliente()).isNotNull().isEqualTo(CLIENTE_OURO);
+        mockValorTotalDoPedidoFaturado1Como(Dinheiro.valueOf(3500));
+        mockValorTotalDoPedidoFaturado2Como(Dinheiro.valueOf(7500));
+        assertTipoClienteIgualA(OURO);
     }
 
     @Test
@@ -112,8 +114,12 @@ public class ClienteTest {
 
     @Test
     public void deve_manter_o_nome_do_cliente_maiusculo_sem_espacos_no_inicio_ou_no_final() {
-        cliente.setNome(" João da Silva ");
-        assertThat(cliente.getNome()).isNotNull().isEqualTo("JOÃO DA SILVA");
+        cliente.setNome(Nome.valueOf(" João da Silva "));
+        assertThat(cliente.getNome()).isNotNull().isEqualTo(Nome.valueOf("JOÃO DA SILVA"));
+    }
+
+    private void assertTipoClienteIgualA(TipoCliente bronze) {
+        assertThat(cliente.calcularTipoCliente()).isNotNull().isEqualTo(bronze);
     }
 
     private void assertClienteMenorDeIdade() {
@@ -140,15 +146,15 @@ public class ClienteTest {
 
     private void assertClienteIgual() {
         Cliente outroIgual = new Cliente();
-        outroIgual.setId(1);
+        outroIgual.setCpf(cpfQualquer);
         assertThat(cliente).isEqualTo(outroIgual);
     }
 
-    private OngoingStubbing<BigDecimal> mockValorTotalDoPedidoFaturado2Como(BigDecimal valorTotalFinal) {
-        return when(pedidoFaturado2.getValorTotalFinal()).thenReturn(valorTotalFinal);
+    private void mockValorTotalDoPedidoFaturado2Como(Dinheiro valorTotalFinal) {
+        when(pedidoFaturado2.getValorTotalFinal()).thenReturn(valorTotalFinal);
     }
 
-    private OngoingStubbing<BigDecimal> mockValorTotalDoPedidoFaturado1Como350() {
-        return when(pedidoFaturado1.getValorTotalFinal()).thenReturn(BigDecimal.valueOf(350));
+    private void mockValorTotalDoPedidoFaturado1Como(Dinheiro valor) {
+        when(pedidoFaturado1.getValorTotalFinal()).thenReturn(valor);
     }
 }

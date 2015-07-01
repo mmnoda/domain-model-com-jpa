@@ -1,12 +1,12 @@
 package br.com.devmedia.cleancode.modelo.pedido;
 
+import br.com.devmedia.cleancode.modelo.Dinheiro;
+import br.com.devmedia.cleancode.modelo.Quantidade;
 import br.com.devmedia.cleancode.modelo.produto.Produto;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Objects;
 
 /**
@@ -22,7 +22,7 @@ public class ItemPedido implements Serializable {
     private Integer id;
 
     @Version
-    private Integer version;
+    Integer version;
 
     @ManyToOne
     @JoinColumn(name = "id_pedido")
@@ -35,18 +35,18 @@ public class ItemPedido implements Serializable {
     private Produto produto;
 
     @NotNull
-    private BigInteger quantidade;
+    private Quantidade quantidade;
 
     @NotNull
-    private BigDecimal valorUnitario;
+    private Dinheiro valorUnitario;
 
     @NotNull
-    private BigDecimal valorTotal;
+    private Dinheiro valorTotal;
 
-    ItemPedido() {
+    protected ItemPedido() {
     }
 
-    public ItemPedido(Pedido pedido, Produto produto, BigInteger quantidade) {
+    private ItemPedido(Pedido pedido, Produto produto, Quantidade quantidade) {
         this.pedido = pedido;
         this.quantidade = quantidade;
         this.produto = produto;
@@ -54,22 +54,26 @@ public class ItemPedido implements Serializable {
         calcularValorTotal();
     }
 
+    public static ItemPedido newItemPedido(Pedido pedido, Produto produto, Quantidade quantidade) {
+        return new ItemPedido(pedido, produto, quantidade);
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(pedido, produto);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof ItemPedido) {
             final ItemPedido other = (ItemPedido) obj;
-            return Objects.equals(this.id, other.id);
+            return Objects.equals(this.pedido, other.pedido) && Objects.equals(this.produto, other.produto);
         }
         return false;
     }
 
     private void calcularValorTotal() {
-        valorTotal = valorUnitario.multiply(new BigDecimal(quantidade));
+        valorTotal = valorUnitario.multiply(quantidade);
     }
 
     public void setProduto(Produto produto) {
@@ -96,28 +100,28 @@ public class ItemPedido implements Serializable {
         return produto;
     }
 
-    public BigInteger getQuantidade() {
+    public Quantidade getQuantidade() {
         return quantidade;
     }
 
-    public void setQuantidade(BigInteger quantidade) {
+    public void setQuantidade(Quantidade quantidade) {
         this.quantidade = quantidade;
         calcularValorTotal();
     }
 
-    public BigDecimal getValorUnitario() {
+    public Dinheiro getValorUnitario() {
         return valorUnitario;
     }
 
-    public void setValorUnitario(BigDecimal valorUnitario) {
+    public void setValorUnitario(Dinheiro valorUnitario) {
         this.valorUnitario = valorUnitario;
     }
 
-    public BigDecimal getValorTotal() {
+    public Dinheiro getValorTotal() {
         return valorTotal;
     }
 
-    public void setValorTotal(BigDecimal valorTotal) {
+    public void setValorTotal(Dinheiro valorTotal) {
         this.valorTotal = valorTotal;
     }
 

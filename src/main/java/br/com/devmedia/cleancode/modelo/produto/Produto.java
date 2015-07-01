@@ -1,12 +1,15 @@
 package br.com.devmedia.cleancode.modelo.produto;
 
+import br.com.devmedia.cleancode.modelo.Descricao;
+import br.com.devmedia.cleancode.modelo.Dinheiro;
+import br.com.devmedia.cleancode.modelo.Nome;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
@@ -22,38 +25,42 @@ public class Produto implements Serializable {
     private Integer id;
 
     @Version
-    private Integer version;
+    Integer version;
 
     @NotNull
-    private String codigo;
+    private Codigo codigo;
 
     @NotNull
-    private String nome;
+    private Nome nome;
 
-    private String descricao;
+    private Descricao descricao;
 
-    private BigDecimal preco;
+    private Dinheiro preco;
 
-    Produto() {
+    protected Produto() {
     }
 
-    public Produto(String codigo, String nome, String descricao, BigDecimal preco) {
-        this.codigo = codigo;
-        this.nome = nome;
-        this.descricao = descricao;
-        this.preco = preco;
+    public Produto(Builder builder) {
+        this.codigo = builder.codigo;
+        this.nome = builder.nome;
+        this.descricao = builder.descricao;
+        this.preco = builder.preco;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(codigo);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Produto){
+        if (obj instanceof Produto) {
             final Produto other = (Produto) obj;
-            return Objects.equals(this.id, other.id);
+            return Objects.equals(this.codigo, other.codigo);
         }
         return false;
     }
@@ -66,43 +73,73 @@ public class Produto implements Serializable {
         return id;
     }
 
-    public Integer getVersion() {
-        return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
-    }
-
-    public String getCodigo() {
+    public Codigo getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(String codigo) {
+    public void setCodigo(Codigo codigo) {
         this.codigo = codigo;
     }
 
-    public String getNome() {
+    public Nome getNome() {
         return nome;
     }
 
-    public void setNome(String nome) {
+    public void setNome(Nome nome) {
         this.nome = nome;
     }
 
-    public String getDescricao() {
+    public Descricao getDescricao() {
         return descricao;
     }
 
-    public void setDescricao(String descricao) {
+    public void setDescricao(Descricao descricao) {
         this.descricao = descricao;
     }
 
-    public BigDecimal getPreco() {
+    public Dinheiro getPreco() {
         return preco;
     }
 
-    public void setPreco(BigDecimal preco) {
+    public void setPreco(Dinheiro preco) {
         this.preco = preco;
+    }
+
+    public static class Builder {
+
+        private Codigo codigo;
+
+        private Nome nome;
+
+        private Descricao descricao;
+
+        private Dinheiro preco;
+
+        private Builder() {
+        }
+
+        public Builder codigo(Codigo codigo) {
+            this.codigo = codigo;
+            return this;
+        }
+
+        public Builder nome(Nome nome) {
+            this.nome = nome;
+            return this;
+        }
+
+        public Builder descricao(Descricao descricao) {
+            this.descricao = descricao;
+            return this;
+        }
+
+        public Builder preco(Dinheiro preco) {
+            this.preco = preco;
+            return this;
+        }
+
+        public Produto build() {
+            return new Produto(this);
+        }
     }
 }

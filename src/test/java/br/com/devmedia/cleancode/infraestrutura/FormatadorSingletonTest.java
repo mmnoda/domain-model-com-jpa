@@ -1,6 +1,5 @@
 package br.com.devmedia.cleancode.infraestrutura;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -13,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class FormatadorSingletonTest {
 
-    private FormatadorSingleton formatadorSingleton = FormatadorSingleton.getInstance();
+    private FormatadorSingleton formatadorSingleton = FormatadorSingleton.INSTANCE;
 
     @Test
     public void deve_formatar_big_decimal() throws Exception {

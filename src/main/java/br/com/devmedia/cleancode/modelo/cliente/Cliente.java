@@ -1,18 +1,22 @@
 package br.com.devmedia.cleancode.modelo.cliente;
 
 import br.com.devmedia.cleancode.infraestrutura.DateTimeUtils;
+import br.com.devmedia.cleancode.modelo.Dinheiro;
+import br.com.devmedia.cleancode.modelo.Nome;
 import br.com.devmedia.cleancode.modelo.pedido.Pedido;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import static br.com.devmedia.cleancode.modelo.cliente.TipoCliente.BRONZE;
+import static br.com.devmedia.cleancode.modelo.cliente.TipoCliente.SEM_CLASSIFICACAO;
+import static br.com.devmedia.cleancode.modelo.pedido.StatusPedido.FATURADO;
 import static javax.persistence.TemporalType.DATE;
 
 /**
@@ -28,13 +32,13 @@ public class Cliente implements Serializable, DescontoCliente {
     private Integer id;
 
     @Version
-    private Integer version;
+    Integer version;
 
     @NotNull
-    private String cpf;
+    private Cpf cpf;
 
     @NotNull
-    private String nome;
+    private Nome nome;
 
     @NotNull
     @Temporal(DATE)
@@ -43,50 +47,49 @@ public class Cliente implements Serializable, DescontoCliente {
     @OneToMany(mappedBy = "cliente")
     Set<Pedido> pedidos = new LinkedHashSet<>();
 
+    @Transient
+    transient Dinheiro total;
+
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(cpf);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Cliente) {
             final Cliente other = (Cliente) obj;
-            return Objects.equals(this.id, other.id);
+            return Objects.equals(this.cpf, other.cpf);
         }
         return false;
     }
 
     @Override
-    public Integer calcularTipoCliente() {
+    public TipoCliente calcularTipoCliente() {
         if (pedidos.isEmpty()) {
-            return null;
+            return SEM_CLASSIFICACAO;
         }
 
-        BigDecimal total = BigDecimal.ZERO;
+        total = Dinheiro.ZERO;
 
         for (Pedido pedido : pedidos) {
-            if (pedido.getEstado() == Pedido.FATURADO) {
+            if (pedido.getEstado() == FATURADO) {
                 total = total.add(pedido.getValorTotalFinal());
             }
         }
-
-        if (total.compareTo(DescontoCliente.QUINHENTOS) >= 0 && total.compareTo(DescontoCliente.TRES_MIL) == -1) {
-            return DescontoCliente.CLIENTE_BRONZE;
-        } else if (total.compareTo(DescontoCliente.TRES_MIL) >= 0 && total.compareTo(DescontoCliente.DEZ_MIL) == -1) {
-            return DescontoCliente.CLIENTE_PRATA;
-        } else if (total.compareTo(DescontoCliente.DEZ_MIL) >= 0) {
-            return DescontoCliente.CLIENTE_OURO;
-        }
-
-        return -1;
+        return BRONZE.identificar(this);
     }
 
-    public void setNome(String nome) {
-        if (nome == null) {
-            return;
-        }
-        this.nome = nome.trim().toUpperCase();
+    boolean possuiTotalPedidosMaiorQue(Dinheiro valor) {
+        return total.compareTo(valor) >= 0;
+    }
+
+    boolean possuiTotalPedidosEntre(Dinheiro valorInicial, Dinheiro valorFinal) {
+        return possuiTotalPedidosMaiorQue(valorInicial) && total.compareTo(valorFinal) < 0;
+    }
+
+    public void setNome(Nome nome) {
+        this.nome = nome;
     }
 
     public boolean isMaiorIdade() {
@@ -94,7 +97,7 @@ public class Cliente implements Serializable, DescontoCliente {
     }
 
     public int getIdade() {
-        Period periodo = Period.between(nascimento, DateTimeUtils.getInstance().newLocalDate());
+        Period periodo = Period.between(nascimento, DateTimeUtils.INSTANCE.newLocalDate());
         return periodo.getYears();
     }
 
@@ -106,23 +109,15 @@ public class Cliente implements Serializable, DescontoCliente {
         this.id = id;
     }
 
-    public Integer getVersion() {
-        return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
-    }
-
-    public String getCpf() {
+    public Cpf getCpf() {
         return cpf;
     }
 
-    public void setCpf(String cpf) {
+    public void setCpf(Cpf cpf) {
         this.cpf = cpf;
     }
 
-    public String getNome() {
+    public Nome getNome() {
         return nome;
     }
 

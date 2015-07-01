@@ -8,27 +8,15 @@ import java.time.ZoneId;
 /**
  *
  */
-public class DateTimeUtils {
-
-    private static DateTimeUtils INSTANCE;
+public enum DateTimeUtils {
+    INSTANCE;
 
     private ZoneId zone = ZoneId.systemDefault();
     private Clock clock;
 
-    private DateTimeUtils() {
+    DateTimeUtils() {
         zone = ZoneId.systemDefault();
         setPadrao();
-    }
-
-    public static DateTimeUtils getInstance() {
-        if (INSTANCE == null) {
-            synchronized (DateTimeUtils.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new DateTimeUtils();
-                }
-            }
-        }
-        return INSTANCE;
     }
 
     public void fixar(LocalDateTime dataHora) {
