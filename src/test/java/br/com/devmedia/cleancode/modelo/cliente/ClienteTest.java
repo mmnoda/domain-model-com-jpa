@@ -9,11 +9,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
+import static br.com.devmedia.cleancode.modelo.cliente.PedidosSet.newPedidosSet;
 import static br.com.devmedia.cleancode.modelo.cliente.TipoCliente.*;
 import static br.com.devmedia.cleancode.modelo.pedido.StatusPedido.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,7 +31,8 @@ public class ClienteTest {
     private Pedido pedidoCancelado = mock(Pedido.class);
     private Pedido pedidoAberto = mock(Pedido.class);
 
-    private Set<Pedido> pedidos = new LinkedHashSet<>();
+    private PedidosSet pedidos = newPedidosSet();
+
     private final Cpf cpfQualquer = Cpf.valueOf("16738530722");
 
     @Before
@@ -43,7 +42,7 @@ public class ClienteTest {
     }
 
     private void vincularPedidosAoCliente() {
-        cliente.setPedidos(pedidos);
+        cliente.pedidos = pedidos;
         adicionarPedido(pedidoFaturado1, FATURADO);
         adicionarPedido(pedidoFaturado2, FATURADO);
         adicionarPedido(pedidoCancelado, CANCELADO);
@@ -98,17 +97,17 @@ public class ClienteTest {
 
     @Test
     public void deve_verificar_se_cliente_MAIOR_de_idade() {
-        cliente.setNascimento(LocalDate.of(1997, 6, 30));
+        cliente.setNascimento(DataNascimento.of(1997, 6, 30));
         dateTimeUtils.fixar(getData30Junho2015());
-        assertIdadeClienteIgualA(18);
+        assertIdadeClienteIgualA(Idade.valueOf(18));
         assertClienteMaiorDeIdade();
     }
 
     @Test
     public void deve_verificar_se_cliente_MENOR_de_idade() {
-        cliente.setNascimento(LocalDate.of(2000, 10, 15));
+        cliente.setNascimento(DataNascimento.of(2000, 10, 15));
         dateTimeUtils.fixar(getData30Junho2015());
-        assertIdadeClienteIgualA(14);
+        assertIdadeClienteIgualA(Idade.valueOf(14));
         assertClienteMenorDeIdade();
     }
 
@@ -126,7 +125,7 @@ public class ClienteTest {
         assertThat(cliente.isMaiorIdade()).isFalse();
     }
 
-    private void assertIdadeClienteIgualA(int anos) {
+    private void assertIdadeClienteIgualA(Idade anos) {
         assertThat(cliente.getIdade()).isEqualTo(anos);
     }
 
@@ -140,7 +139,7 @@ public class ClienteTest {
 
     private void assertClienteDiferente() {
         Cliente outroDiferente = new Cliente();
-        outroDiferente.setId(2);
+        outroDiferente.setCpf(Cpf.valueOf("31692172751"));
         assertThat(cliente).isNotEqualTo(outroDiferente);
     }
 

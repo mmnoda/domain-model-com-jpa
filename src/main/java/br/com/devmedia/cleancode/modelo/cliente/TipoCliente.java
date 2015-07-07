@@ -4,16 +4,18 @@ import br.com.devmedia.cleancode.modelo.Dinheiro;
 import br.com.devmedia.cleancode.modelo.Percentual;
 import br.com.devmedia.cleancode.modelo.pedido.Pedido;
 
+import static br.com.devmedia.cleancode.modelo.cliente.DescontoClienteConstants.*;
+
 /**
  *
  */
 public enum TipoCliente {
 
-    BRONZE(0) {
+    BRONZE() {
         @Override
         public Percentual calcularPercentualDesconto(Pedido pedido) {
-            return pedido.getValorTotalItens().compareTo(DescontoCliente.QUINHENTOS) >= 0 ?
-                    DescontoCliente._3_PORCENTO : Percentual.ZERO;
+            return pedido.getValorTotalItens().compareTo(QUINHENTOS) >= 0 ?
+                    _3_PORCENTO : Percentual.ZERO;
         }
 
         @Override
@@ -23,21 +25,21 @@ public enum TipoCliente {
 
         @Override
         protected boolean possuiRequerimentos(Cliente cliente) {
-            return cliente.possuiTotalPedidosEntre(DescontoCliente.QUINHENTOS, DescontoCliente.TRES_MIL);
+            return cliente.possuiTotalPedidosEntre(QUINHENTOS, TRES_MIL);
         }
     },
 
-    PRATA(1) {
+    PRATA() {
         @Override
         public Percentual calcularPercentualDesconto(Pedido pedido) {
 
             Dinheiro valorTotalItens = pedido.getValorTotalItens();
 
-            Percentual percentualDesconto = valorTotalItens.compareTo(DescontoCliente.TRES_MIL) >= 0 ?
-                    DescontoCliente._5_PORCENTO : DescontoCliente._3_PORCENTO;
+            Percentual percentualDesconto = valorTotalItens.compareTo(TRES_MIL) >= 0 ?
+                    DescontoClienteConstants._5_PORCENTO : _3_PORCENTO;
 
             if (pedido.possuiItemComValorMaiorOuIgualQue3000()) {
-                percentualDesconto = percentualDesconto.add(DescontoCliente._3_PORCENTO);
+                percentualDesconto = percentualDesconto.add(_3_PORCENTO);
             }
 
             return percentualDesconto;
@@ -50,14 +52,14 @@ public enum TipoCliente {
 
         @Override
         protected boolean possuiRequerimentos(Cliente cliente) {
-            return cliente.possuiTotalPedidosEntre(DescontoCliente.TRES_MIL, DescontoCliente.DEZ_MIL);
+            return cliente.possuiTotalPedidosEntre(TRES_MIL, DEZ_MIL);
         }
     },
 
-    OURO(2) {
+    OURO() {
         @Override
         public Percentual calcularPercentualDesconto(Pedido pedido) {
-            return DescontoCliente._10_PORCENTO;
+            return _10_PORCENTO;
         }
 
         @Override
@@ -67,11 +69,11 @@ public enum TipoCliente {
 
         @Override
         protected boolean possuiRequerimentos(Cliente cliente) {
-            return cliente.possuiTotalPedidosMaiorQue(DescontoCliente.DEZ_MIL);
+            return cliente.possuiTotalPedidosMaiorQue(DEZ_MIL);
         }
     },
 
-    SEM_CLASSIFICACAO(-1) {
+    SEM_CLASSIFICACAO() {
         @Override
         public Percentual calcularPercentualDesconto(Pedido pedido) {
             return Percentual.ZERO;
@@ -87,16 +89,6 @@ public enum TipoCliente {
             return true;
         }
     };
-
-    private final int codigo;
-
-    TipoCliente(int codigo) {
-        this.codigo = codigo;
-    }
-
-    public final int getCodigo() {
-        return codigo;
-    }
 
     public final TipoCliente identificar(Cliente cliente) {
         return possuiRequerimentos(cliente) ? this : proximo().identificar(cliente);

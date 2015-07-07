@@ -7,10 +7,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static br.com.devmedia.cleancode.modelo.cliente.TipoCliente.*;
+import static br.com.devmedia.cleancode.modelo.pedido.ItensPedidoList.newItensPedidoList;
 import static br.com.devmedia.cleancode.modelo.pedido.Pedido.newPedido;
 import static br.com.devmedia.cleancode.modelo.pedido.StatusPedido.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,7 +38,7 @@ public class PedidoTest {
 
     private NumeroPedido numero = mock(NumeroPedido.class);
 
-    private List<ItemPedido> itens;
+    private ItensPedidoList itens;
 
     @Before
     public void setUp() {
@@ -67,13 +65,11 @@ public class PedidoTest {
 
     @Test
     public void deve_ser_igual_ao_proprio() {
-        pedido.setId(1);
         assertThat(pedido).isEqualTo(pedido);
     }
 
     @Test
     public void deve_implementar_equals_consistente() {
-        pedido.setId(1);
         assertPedidoIgual();
         assertPedidoDiferente();
     }
@@ -291,13 +287,13 @@ public class PedidoTest {
     }
 
     private void adicionarSomenteItem1AoPedido() {
-        itens = new ArrayList<>();
+        itens = newItensPedidoList();
         itens.add(item1);
         pedido.itens = itens;
     }
 
     private void adicionarItens1e2AoPedido() {
-        itens = new ArrayList<>();
+        itens = newItensPedidoList();
         itens.add(item1);
         itens.add(item2);
         pedido.itens = itens;

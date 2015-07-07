@@ -3,6 +3,7 @@ package br.com.devmedia.cleancode.modelo.produto;
 import br.com.devmedia.cleancode.modelo.Descricao;
 import br.com.devmedia.cleancode.modelo.Dinheiro;
 import br.com.devmedia.cleancode.modelo.Nome;
+import com.google.common.base.MoreObjects;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,8 +34,10 @@ public class Produto implements Serializable {
     @NotNull
     private Nome nome;
 
+    @NotNull
     private Descricao descricao;
 
+    @NotNull
     private Dinheiro preco;
 
     protected Produto() {
@@ -65,8 +68,14 @@ public class Produto implements Serializable {
         return false;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("codigo", codigo)
+                .add("nome", nome)
+                .add("descricao", descricao)
+                .add("preco", preco)
+                .toString();
     }
 
     public Integer getId() {
@@ -113,7 +122,7 @@ public class Produto implements Serializable {
 
         private Descricao descricao;
 
-        private Dinheiro preco;
+        private Dinheiro preco = Dinheiro.ZERO;
 
         private Builder() {
         }

@@ -4,17 +4,16 @@ import br.com.devmedia.cleancode.infraestrutura.FormatadorSingleton;
 import br.com.devmedia.cleancode.modelo.Dinheiro;
 import br.com.devmedia.cleancode.modelo.Percentual;
 import br.com.devmedia.cleancode.modelo.cliente.Cliente;
-import br.com.devmedia.cleancode.modelo.cliente.DescontoCliente;
 import br.com.devmedia.cleancode.modelo.cliente.TipoCliente;
+import com.google.common.base.MoreObjects;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 
-import static br.com.devmedia.cleancode.modelo.pedido.StatusPedido.*;
+import static br.com.devmedia.cleancode.modelo.pedido.ItensPedidoList.newItensPedidoList;
+import static br.com.devmedia.cleancode.modelo.pedido.StatusPedido.ABERTO;
 
 /**
  */
@@ -43,14 +42,17 @@ public class Pedido implements Serializable {
     @NotNull
     StatusPedido estado;
 
+    @NotNull
     private Dinheiro valorTotalItens;
 
+    @NotNull
     private Dinheiro desconto;
 
+    @NotNull
     private Dinheiro valorTotalFinal;
 
-    @OneToMany(mappedBy = "pedido")
-    List<ItemPedido> itens;
+    @Embedded
+    ItensPedidoList itens;
 
     protected Pedido() {
     }
@@ -69,7 +71,7 @@ public class Pedido implements Serializable {
         estado = ABERTO;
         valorTotalItens = Dinheiro.ZERO;
         desconto = Dinheiro.ZERO;
-        itens = new LinkedList<>();
+        itens = newItensPedidoList();
     }
 
     @Override
@@ -86,22 +88,34 @@ public class Pedido implements Serializable {
         return false;
     }
 
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("numero", numero)
+                .add("cliente", cliente)
+                .add("estado", estado)
+                .add("valorTotalItens", valorTotalItens)
+                .add("desconto", desconto)
+                .add("valorTotalFinal", valorTotalFinal)
+                .toString();
+    }
+
     public Pedido adicionar(ItemPedido item) {
-        if (estado == ABERTO) {
+        if (estado.podeIncluirNovoItem()) {
             itens.add(item);
             calcularValorTotalItens();
         } else {
-            return lancarExcecaoItensDoPedidoNaoPodeSerAlterado();
+            lancarExcecaoItensDoPedidoNaoPodeSerAlterado();
         }
         return this;
     }
 
-    private Pedido lancarExcecaoItensDoPedidoNaoPodeSerAlterado() {
+    private void lancarExcecaoItensDoPedidoNaoPodeSerAlterado() {
         throw new IllegalStateException("Os itens do pedido não pode ser alterado");
     }
 
     public Pedido remover(ItemPedido item) {
-        if (estado == ABERTO) {
+        if (estado.podeRemoverItem()) {
             itens.remove(item);
             calcularValorTotalItens();
         } else {
@@ -110,65 +124,42 @@ public class Pedido implements Serializable {
         return this;
     }
 
-    private void aplicarDesconto() {
-        if (estado == ABERTO) {
-            final TipoCliente tipoCliente = cliente.calcularTipoCliente();
-
-            Percentual percentualDesconto = tipoCliente.calcularPercentualDesconto(this);
-            desconto = percentualDesconto.calcular(valorTotalItens);
-        }
+    void aplicarDesconto() {
+        final TipoCliente tipoCliente = cliente.calcularTipoCliente();
+        Percentual percentualDesconto = tipoCliente.calcularPercentualDesconto(this);
+        desconto = percentualDesconto.calcular(valorTotalItens);
     }
 
-     public boolean possuiItemComValorMaiorOuIgualQue3000() {
-        for (ItemPedido item : itens) {
-            if (item.getValorUnitario().compareTo(DescontoCliente.TRES_MIL) >= 0) {
-                return true;
-            }
-        }
-        return false;
+    public boolean possuiItemComValorMaiorOuIgualQue3000() {
+        return itens.possuiItemComValorMaiorOuIgualQue3000();
     }
 
-    private void calcularValorFinal() {
+    void calcularValorFinal() {
         valorTotalFinal = valorTotalItens.add(desconto.negate());
     }
 
-    private void calcularValorTotalItens() {
-        valorTotalItens = Dinheiro.ZERO;
-        for (ItemPedido item : itens) {
-            valorTotalItens = valorTotalItens.add(item.getValorTotal());
-        }
+    void calcularValorTotalItens() {
+        valorTotalItens = itens.calcularValorTotalItens();
     }
 
     public void faturar() {
-        if (estado == ABERTO) {
-            calcularValorTotalItens();
-            aplicarDesconto();
-            calcularValorFinal();
-            estado = FATURADO;
-        } else {
-            throw new IllegalStateException("Pedido não está aberto");
-        }
-
+        estado.faturar(this);
     }
 
     public void cancelar() {
-        if (estado == FATURADO) {
-            estado = CANCELADO;
-        } else {
-            throw new IllegalStateException("Pedido não está faturado");
-        }
+        estado.cancelar(this);
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+    void setEstado(StatusPedido estado) {
+        this.estado = estado;
     }
 
     public String getValorTotalItensAsString() {
         return FormatadorSingleton.INSTANCE.formatar(valorTotalItens.toBigDecimal());
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public Cliente getCliente() {
@@ -203,24 +194,15 @@ public class Pedido implements Serializable {
         this.valorTotalFinal = valorTotalFinal;
     }
 
-    public List<ItemPedido> getItens() {
+    public ItensPedidoList getItens() {
         return itens;
-    }
-
-    public void setItens(List<ItemPedido> itens) {
-        this.itens = itens;
     }
 
     public StatusPedido getEstado() {
         return estado;
     }
 
-    public void setEstado(StatusPedido estado) {
-        this.estado = estado;
-    }
-
     public NumeroPedido getNumero() {
         return numero;
     }
-
 }

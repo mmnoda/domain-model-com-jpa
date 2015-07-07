@@ -38,13 +38,11 @@ public class ItemPedidoTest {
 
     @Test
     public void deve_ser_igual_ao_proprio() {
-        itemPedido.setId(1);
         assertThat(itemPedido).isEqualTo(itemPedido);
     }
 
     @Test
     public void deve_implementar_equals_consistente() {
-        itemPedido.setId(1);
         assertItemPedidoIgual();
         assertItemPedidoDiferente();
     }
@@ -56,7 +54,6 @@ public class ItemPedidoTest {
 
     private void assertItemPedidoIgual() {
         ItemPedido outroIgual = newItemPedido(pedido, produtoA, Quantidade.valueOf(23));
-        outroIgual.setId(1);
         assertThat(itemPedido).isEqualTo(outroIgual);
     }
 

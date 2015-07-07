@@ -10,8 +10,7 @@ import java.util.Objects;
  *
  */
 @Entity
-public class NumeroPedido implements Serializable
-{
+public class NumeroPedido implements Serializable, Comparable<NumeroPedido> {
     private static final long serialVersionUID = -1668268098929534320L;
 
     @Id
@@ -48,5 +47,8 @@ public class NumeroPedido implements Serializable
         return id.toString();
     }
 
-
+    @Override
+    public int compareTo(NumeroPedido o) {
+        return id.compareTo(id);
+    }
 }

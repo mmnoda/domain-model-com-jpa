@@ -6,7 +6,7 @@ import java.util.Objects;
 /**
  *
  */
-public class Codigo implements Serializable {
+public class Codigo implements Serializable, Comparable<Codigo> {
 
     private static final long serialVersionUID = 6050486045943534588L;
 
@@ -37,5 +37,10 @@ public class Codigo implements Serializable {
     @Override
     public String toString() {
         return valor;
+    }
+
+    @Override
+    public int compareTo(Codigo o) {
+        return valor.compareTo(o.valor);
     }
 }

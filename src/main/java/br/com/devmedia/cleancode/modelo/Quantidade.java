@@ -1,6 +1,5 @@
 package br.com.devmedia.cleancode.modelo;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -49,7 +48,7 @@ public class Quantidade implements Serializable, Comparable<Quantidade> {
     }
 
     @Override
-    public int compareTo(@NotNull Quantidade o) {
+    public int compareTo(Quantidade o) {
         return valor.compareTo(o.valor);
     }
 

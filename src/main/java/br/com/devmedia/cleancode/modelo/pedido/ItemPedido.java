@@ -3,6 +3,7 @@ package br.com.devmedia.cleancode.modelo.pedido;
 import br.com.devmedia.cleancode.modelo.Dinheiro;
 import br.com.devmedia.cleancode.modelo.Quantidade;
 import br.com.devmedia.cleancode.modelo.produto.Produto;
+import com.google.common.base.MoreObjects;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -20,9 +21,6 @@ public class ItemPedido implements Serializable {
     @Id
     @GeneratedValue
     private Integer id;
-
-    @Version
-    Integer version;
 
     @ManyToOne
     @JoinColumn(name = "id_pedido")
@@ -72,6 +70,17 @@ public class ItemPedido implements Serializable {
         return false;
     }
 
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("pedido", pedido)
+                .add("produto", produto)
+                .add("quantidade", quantidade)
+                .add("valorUnitario", valorUnitario)
+                .add("valorTotal", valorTotal)
+                .toString();
+    }
+
     private void calcularValorTotal() {
         valorTotal = valorUnitario.multiply(quantidade);
     }
@@ -82,10 +91,6 @@ public class ItemPedido implements Serializable {
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public Pedido getPedido() {
@@ -124,5 +129,4 @@ public class ItemPedido implements Serializable {
     public void setValorTotal(Dinheiro valorTotal) {
         this.valorTotal = valorTotal;
     }
-
 }

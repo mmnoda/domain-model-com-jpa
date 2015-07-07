@@ -1,29 +1,24 @@
 package br.com.devmedia.cleancode.modelo.cliente;
 
-import br.com.devmedia.cleancode.infraestrutura.DateTimeUtils;
 import br.com.devmedia.cleancode.modelo.Dinheiro;
 import br.com.devmedia.cleancode.modelo.Nome;
-import br.com.devmedia.cleancode.modelo.pedido.Pedido;
+import com.google.common.base.MoreObjects;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.LinkedHashSet;
 import java.util.Objects;
-import java.util.Set;
 
+import static br.com.devmedia.cleancode.modelo.cliente.PedidosSet.newPedidosSet;
 import static br.com.devmedia.cleancode.modelo.cliente.TipoCliente.BRONZE;
 import static br.com.devmedia.cleancode.modelo.cliente.TipoCliente.SEM_CLASSIFICACAO;
-import static br.com.devmedia.cleancode.modelo.pedido.StatusPedido.FATURADO;
 import static javax.persistence.TemporalType.DATE;
 
 /**
  *
  */
 @Entity
-public class Cliente implements Serializable, DescontoCliente {
+public class Cliente implements Serializable {
 
     private static final long serialVersionUID = 85250768609444L;
 
@@ -42,10 +37,10 @@ public class Cliente implements Serializable, DescontoCliente {
 
     @NotNull
     @Temporal(DATE)
-    private LocalDate nascimento;
+    private DataNascimento nascimento;
 
-    @OneToMany(mappedBy = "cliente")
-    Set<Pedido> pedidos = new LinkedHashSet<>();
+    @Embedded
+    PedidosSet pedidos = newPedidosSet();
 
     @Transient
     transient Dinheiro total;
@@ -65,18 +60,21 @@ public class Cliente implements Serializable, DescontoCliente {
     }
 
     @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("cpf", cpf)
+                .add("nome", nome)
+                .add("nascimento", nascimento)
+                .add("pedidos", pedidos)
+                .add("total", total)
+                .toString();
+    }
+
     public TipoCliente calcularTipoCliente() {
         if (pedidos.isEmpty()) {
             return SEM_CLASSIFICACAO;
         }
-
-        total = Dinheiro.ZERO;
-
-        for (Pedido pedido : pedidos) {
-            if (pedido.getEstado() == FATURADO) {
-                total = total.add(pedido.getValorTotalFinal());
-            }
-        }
+        total = pedidos.calcularTotal();
         return BRONZE.identificar(this);
     }
 
@@ -88,25 +86,20 @@ public class Cliente implements Serializable, DescontoCliente {
         return possuiTotalPedidosMaiorQue(valorInicial) && total.compareTo(valorFinal) < 0;
     }
 
+    public boolean isMaiorIdade() {
+        return getIdade().isMaiorIdade();
+    }
+
     public void setNome(Nome nome) {
         this.nome = nome;
     }
 
-    public boolean isMaiorIdade() {
-        return getIdade() >= 18;
-    }
-
-    public int getIdade() {
-        Period periodo = Period.between(nascimento, DateTimeUtils.INSTANCE.newLocalDate());
-        return periodo.getYears();
+    public Idade getIdade() {
+        return nascimento.getIdade();
     }
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public Cpf getCpf() {
@@ -121,19 +114,15 @@ public class Cliente implements Serializable, DescontoCliente {
         return nome;
     }
 
-    public Set<Pedido> getPedidos() {
+    public PedidosSet getPedidos() {
         return pedidos;
     }
 
-    public void setPedidos(Set<Pedido> pedidos) {
-        this.pedidos = pedidos;
-    }
-
-    public LocalDate getNascimento() {
+    public DataNascimento getNascimento() {
         return nascimento;
     }
 
-    public void setNascimento(LocalDate nascimento) {
+    public void setNascimento(DataNascimento nascimento) {
         this.nascimento = nascimento;
     }
 }

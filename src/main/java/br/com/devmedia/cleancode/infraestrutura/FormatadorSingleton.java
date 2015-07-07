@@ -23,5 +23,4 @@ public enum FormatadorSingleton {
         DecimalFormat numberFormat = new DecimalFormat(FORMATO_INTEIRO);
         return numberFormat.format(valor.doubleValue());
     }
-
 }

@@ -3,6 +3,9 @@ package br.com.devmedia.cleancode.modelo.cliente;
 import java.io.Serializable;
 import java.util.Objects;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 /**
  *
  */
@@ -17,6 +20,7 @@ public class Cpf implements Serializable, Comparable<Cpf> {
     }
 
     public static Cpf valueOf(String valor) {
+        checkArgument(!isNullOrEmpty(valor), "CPF nulo ou vazio");
         return new Cpf(valor);
     }
 
@@ -35,7 +39,13 @@ public class Cpf implements Serializable, Comparable<Cpf> {
     }
 
     @Override
+    public String toString() {
+        return valor;
+    }
+
+    @Override
     public int compareTo(Cpf o) {
         return valor.compareTo(o.valor);
     }
+
 }

@@ -1,6 +1,5 @@
 package br.com.devmedia.cleancode.modelo;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -41,7 +40,7 @@ public class Descricao implements Serializable, Comparable<Descricao> {
     }
 
     @Override
-    public int compareTo(@NotNull Descricao o) {
+    public int compareTo(Descricao o) {
         return valor.compareTo(o.valor);
     }
 }
