@@ -3,6 +3,9 @@ package br.com.devmedia.cleancode.modelo.produto;
 import java.io.Serializable;
 import java.util.Objects;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 /**
  *
  */
@@ -17,6 +20,7 @@ public class Codigo implements Serializable, Comparable<Codigo> {
     }
 
     public static Codigo valueOf(String valor) {
+        checkArgument(!isNullOrEmpty(valor), "Código nulo ou vazio");
         return new Codigo(valor);
     }
 

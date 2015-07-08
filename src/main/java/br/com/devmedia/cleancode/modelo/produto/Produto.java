@@ -1,8 +1,8 @@
 package br.com.devmedia.cleancode.modelo.produto;
 
-import br.com.devmedia.cleancode.modelo.Descricao;
-import br.com.devmedia.cleancode.modelo.Dinheiro;
-import br.com.devmedia.cleancode.modelo.Nome;
+import br.com.devmedia.cleancode.modelo.comum.Descricao;
+import br.com.devmedia.cleancode.modelo.comum.Dinheiro;
+import br.com.devmedia.cleancode.modelo.comum.Nome;
 import com.google.common.base.MoreObjects;
 
 import javax.persistence.Entity;

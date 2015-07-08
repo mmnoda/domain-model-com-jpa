@@ -1,6 +1,6 @@
 package br.com.devmedia.cleancode.modelo.cliente;
 
-import br.com.devmedia.cleancode.modelo.Dinheiro;
+import br.com.devmedia.cleancode.modelo.comum.Dinheiro;
 import br.com.devmedia.cleancode.modelo.pedido.Pedido;
 
 import javax.persistence.Embeddable;

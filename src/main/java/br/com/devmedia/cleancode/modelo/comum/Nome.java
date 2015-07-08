@@ -1,8 +1,11 @@
-package br.com.devmedia.cleancode.modelo;
+package br.com.devmedia.cleancode.modelo.comum;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  *
@@ -18,6 +21,7 @@ public class Nome implements Serializable, Comparable<Nome> {
     }
 
     public static Nome valueOf(String valor) {
+        checkArgument(!isNullOrEmpty(valor), "Nome nulo ou vazio");
         return new Nome(valor);
     }
 

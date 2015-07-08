@@ -1,7 +1,7 @@
 package br.com.devmedia.cleancode.modelo.cliente;
 
-import br.com.devmedia.cleancode.modelo.Dinheiro;
-import br.com.devmedia.cleancode.modelo.Nome;
+import br.com.devmedia.cleancode.modelo.comum.Dinheiro;
+import br.com.devmedia.cleancode.modelo.comum.Nome;
 import com.google.common.base.MoreObjects;
 
 import javax.persistence.*;
@@ -12,7 +12,6 @@ import java.util.Objects;
 import static br.com.devmedia.cleancode.modelo.cliente.PedidosSet.newPedidosSet;
 import static br.com.devmedia.cleancode.modelo.cliente.TipoCliente.BRONZE;
 import static br.com.devmedia.cleancode.modelo.cliente.TipoCliente.SEM_CLASSIFICACAO;
-import static javax.persistence.TemporalType.DATE;
 
 /**
  *
@@ -36,7 +35,6 @@ public class Cliente implements Serializable {
     private Nome nome;
 
     @NotNull
-    @Temporal(DATE)
     private DataNascimento nascimento;
 
     @Embedded
@@ -93,6 +91,7 @@ public class Cliente implements Serializable {
     public void setNome(Nome nome) {
         this.nome = nome;
     }
+
 
     public Idade getIdade() {
         return nascimento.getIdade();

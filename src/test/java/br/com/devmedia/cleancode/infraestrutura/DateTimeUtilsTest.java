@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class DateTimeUtilsTest {
 
-    private DateTimeUtils dateTimeUtils = DateTimeUtils.INSTANCE;
+    private final DateTimeUtils dateTimeUtils = DateTimeUtils.INSTANCE;
 
     @After
     public void tearDown() {

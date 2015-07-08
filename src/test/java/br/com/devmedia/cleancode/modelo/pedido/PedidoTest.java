@@ -1,6 +1,6 @@
 package br.com.devmedia.cleancode.modelo.pedido;
 
-import br.com.devmedia.cleancode.modelo.Dinheiro;
+import br.com.devmedia.cleancode.modelo.comum.Dinheiro;
 import br.com.devmedia.cleancode.modelo.cliente.Cliente;
 import br.com.devmedia.cleancode.modelo.cliente.TipoCliente;
 import org.junit.After;
@@ -78,12 +78,14 @@ public class PedidoTest {
         Pedido outroDiferente = new Pedido();
         outroDiferente.numero = mock(NumeroPedido.class);
         assertThat(pedido).isNotEqualTo(outroDiferente);
+        assertThat(pedido.hashCode()).isNotEqualTo(outroDiferente.hashCode());
     }
 
     private void assertPedidoIgual() {
         Pedido outroIgual = new Pedido();
         outroIgual.numero = numero;
         assertThat(pedido).isEqualTo(outroIgual);
+        assertThat(pedido.hashCode()).isEqualTo(outroIgual.hashCode());
     }
 
     @Test

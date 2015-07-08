@@ -1,6 +1,5 @@
-package br.com.devmedia.cleancode.modelo;
+package br.com.devmedia.cleancode.modelo.comum;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -61,8 +60,12 @@ public class Percentual implements Serializable, Comparable<Percentual> {
                 divide(_100, ARREDONDAMENTO_PADRAO));
     }
 
+    public BigDecimal toBigDecimal() {
+        return valor;
+    }
+
     @Override
-    public int compareTo(@NotNull Percentual o) {
+    public int compareTo(Percentual o) {
         return valor.compareTo(o.valor);
     }
 }

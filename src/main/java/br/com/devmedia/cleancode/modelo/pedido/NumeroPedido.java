@@ -1,5 +1,7 @@
 package br.com.devmedia.cleancode.modelo.pedido;
 
+import com.google.common.base.MoreObjects;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -43,12 +45,14 @@ public class NumeroPedido implements Serializable, Comparable<NumeroPedido> {
     }
 
     @Override
-    public String toString() {
-        return id.toString();
+    public int compareTo(NumeroPedido o) {
+        return id.compareTo(id);
     }
 
     @Override
-    public int compareTo(NumeroPedido o) {
-        return id.compareTo(id);
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .toString();
     }
 }

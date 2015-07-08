@@ -1,10 +1,10 @@
 package br.com.devmedia.cleancode.modelo.pedido;
 
 import br.com.devmedia.cleancode.infraestrutura.FormatadorSingleton;
-import br.com.devmedia.cleancode.modelo.Dinheiro;
-import br.com.devmedia.cleancode.modelo.Percentual;
 import br.com.devmedia.cleancode.modelo.cliente.Cliente;
 import br.com.devmedia.cleancode.modelo.cliente.TipoCliente;
+import br.com.devmedia.cleancode.modelo.comum.Dinheiro;
+import br.com.devmedia.cleancode.modelo.comum.Percentual;
 import com.google.common.base.MoreObjects;
 
 import javax.persistence.*;

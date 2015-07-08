@@ -1,11 +1,16 @@
 package br.com.devmedia.cleancode.modelo.pedido;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
+
+import java.util.Map;
+
 /**
  *
  */
 public enum StatusPedido {
 
-    ABERTO() {
+    ABERTO('A') {
         @Override
         public void faturar(Pedido pedido) {
             pedido.calcularValorTotalItens();
@@ -30,7 +35,7 @@ public enum StatusPedido {
         }
     },
 
-    CANCELADO() {
+    CANCELADO('C') {
         @Override
         public void faturar(Pedido pedido) {
             throw new IllegalStateException("Pedido não está aberto");
@@ -51,7 +56,7 @@ public enum StatusPedido {
             return false;
         }
     },
-    FATURADO() {
+    FATURADO('F') {
         @Override
         public void faturar(Pedido pedido) {
             throw new IllegalStateException("Pedido já faturado");
@@ -72,6 +77,32 @@ public enum StatusPedido {
             return false;
         }
     };
+
+    private final char prefixo;
+
+    private final static Map<Character, StatusPedido> statusMap;
+
+    static {
+        Builder<Character, StatusPedido> builder = ImmutableMap.<Character, StatusPedido>builder();
+
+        StatusPedido[] values = values();
+        for (StatusPedido statusPedido : values) {
+            builder.put(statusPedido.getPrefixo(), statusPedido);
+        }
+        statusMap = builder.build();
+    }
+
+    StatusPedido(char prefixo) {
+        this.prefixo = prefixo;
+    }
+
+    public static StatusPedido byPrefixo(Character prefixo) {
+        return statusMap.get(prefixo);
+    }
+
+    public final char getPrefixo() {
+        return prefixo;
+    }
 
     public abstract void faturar(Pedido pedido);
 

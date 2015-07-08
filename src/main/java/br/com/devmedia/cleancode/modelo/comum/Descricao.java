@@ -1,7 +1,10 @@
-package br.com.devmedia.cleancode.modelo;
+package br.com.devmedia.cleancode.modelo.comum;
 
 import java.io.Serializable;
 import java.util.Objects;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  *
@@ -17,6 +20,7 @@ public class Descricao implements Serializable, Comparable<Descricao> {
     }
 
     public static Descricao valueOf(String valor) {
+        checkArgument(!isNullOrEmpty(valor), "Descrição nulo ou vazio");
         return new Descricao(valor);
     }
 

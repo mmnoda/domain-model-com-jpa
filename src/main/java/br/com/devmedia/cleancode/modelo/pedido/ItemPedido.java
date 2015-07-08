@@ -1,7 +1,7 @@
 package br.com.devmedia.cleancode.modelo.pedido;
 
-import br.com.devmedia.cleancode.modelo.Dinheiro;
-import br.com.devmedia.cleancode.modelo.Quantidade;
+import br.com.devmedia.cleancode.modelo.comum.Dinheiro;
+import br.com.devmedia.cleancode.modelo.comum.Quantidade;
 import br.com.devmedia.cleancode.modelo.produto.Produto;
 import com.google.common.base.MoreObjects;
 

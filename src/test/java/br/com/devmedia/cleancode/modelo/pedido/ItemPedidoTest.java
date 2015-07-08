@@ -1,7 +1,7 @@
 package br.com.devmedia.cleancode.modelo.pedido;
 
-import br.com.devmedia.cleancode.modelo.Dinheiro;
-import br.com.devmedia.cleancode.modelo.Quantidade;
+import br.com.devmedia.cleancode.modelo.comum.Dinheiro;
+import br.com.devmedia.cleancode.modelo.comum.Quantidade;
 import br.com.devmedia.cleancode.modelo.produto.Produto;
 import org.junit.After;
 import org.junit.Before;
@@ -20,9 +20,9 @@ public class ItemPedidoTest {
 
     private ItemPedido itemPedido;
 
-    private Pedido pedido = mock(Pedido.class);
-    private Produto produtoA = mock(Produto.class);
-    private Produto produtoB = mock(Produto.class);
+    private final Pedido pedido = mock(Pedido.class);
+    private final Produto produtoA = mock(Produto.class);
+    private final Produto produtoB = mock(Produto.class);
 
     @Before
     public void setUp() {
@@ -50,11 +50,13 @@ public class ItemPedidoTest {
     private void assertItemPedidoDiferente() {
         ItemPedido outroDiferente = newItemPedido(pedido, produtoB, Quantidade.valueOf(12));
         assertThat(itemPedido).isNotEqualTo(outroDiferente);
+        assertThat(itemPedido.hashCode()).isNotEqualTo(outroDiferente.hashCode());
     }
 
     private void assertItemPedidoIgual() {
         ItemPedido outroIgual = newItemPedido(pedido, produtoA, Quantidade.valueOf(23));
         assertThat(itemPedido).isEqualTo(outroIgual);
+        assertThat(itemPedido.hashCode()).isEqualTo(outroIgual.hashCode());
     }
 
     @Test

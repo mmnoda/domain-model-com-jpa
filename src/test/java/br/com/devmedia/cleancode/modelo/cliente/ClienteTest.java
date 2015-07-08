@@ -1,8 +1,8 @@
 package br.com.devmedia.cleancode.modelo.cliente;
 
 import br.com.devmedia.cleancode.infraestrutura.DateTimeUtils;
-import br.com.devmedia.cleancode.modelo.Dinheiro;
-import br.com.devmedia.cleancode.modelo.Nome;
+import br.com.devmedia.cleancode.modelo.comum.Dinheiro;
+import br.com.devmedia.cleancode.modelo.comum.Nome;
 import br.com.devmedia.cleancode.modelo.pedido.Pedido;
 import br.com.devmedia.cleancode.modelo.pedido.StatusPedido;
 import org.junit.After;
@@ -26,12 +26,12 @@ public class ClienteTest {
 
     private final DateTimeUtils dateTimeUtils = DateTimeUtils.INSTANCE;
 
-    private Pedido pedidoFaturado1 = mock(Pedido.class);
-    private Pedido pedidoFaturado2 = mock(Pedido.class);
-    private Pedido pedidoCancelado = mock(Pedido.class);
-    private Pedido pedidoAberto = mock(Pedido.class);
+    private final Pedido pedidoFaturado1 = mock(Pedido.class);
+    private final Pedido pedidoFaturado2 = mock(Pedido.class);
+    private final Pedido pedidoCancelado = mock(Pedido.class);
+    private final Pedido pedidoAberto = mock(Pedido.class);
 
-    private PedidosSet pedidos = newPedidosSet();
+    private final PedidosSet pedidos = newPedidosSet();
 
     private final Cpf cpfQualquer = Cpf.valueOf("16738530722");
 

@@ -1,6 +1,5 @@
-package br.com.devmedia.cleancode.modelo;
+package br.com.devmedia.cleancode.modelo.comum;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -16,7 +15,6 @@ public class Dinheiro implements Serializable, Comparable<Dinheiro> {
     private static final long serialVersionUID = -6881965660274224561L;
 
     public static final Dinheiro ZERO = valueOf(BigDecimal.ZERO);
-
 
     private final BigDecimal valor;
 
@@ -52,7 +50,7 @@ public class Dinheiro implements Serializable, Comparable<Dinheiro> {
     }
 
     @Override
-    public int compareTo(@NotNull Dinheiro o) {
+    public int compareTo(Dinheiro o) {
         return valor.compareTo(o.valor);
     }
 

@@ -1,4 +1,4 @@
-package br.com.devmedia.cleancode.modelo;
+package br.com.devmedia.cleancode.modelo.comum;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -50,6 +50,10 @@ public class Quantidade implements Serializable, Comparable<Quantidade> {
     @Override
     public int compareTo(Quantidade o) {
         return valor.compareTo(o.valor);
+    }
+
+    public long longValue() {
+        return valor.longValue();
     }
 
     public BigDecimal toBigDecimal() {

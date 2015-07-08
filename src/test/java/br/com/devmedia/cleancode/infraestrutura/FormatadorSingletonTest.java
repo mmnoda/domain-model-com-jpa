@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class FormatadorSingletonTest {
 
-    private FormatadorSingleton formatadorSingleton = FormatadorSingleton.INSTANCE;
+    private final FormatadorSingleton formatadorSingleton = FormatadorSingleton.INSTANCE;
 
     @Test
     public void deve_formatar_big_decimal() throws Exception {

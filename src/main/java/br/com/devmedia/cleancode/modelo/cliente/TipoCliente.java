@@ -1,7 +1,7 @@
 package br.com.devmedia.cleancode.modelo.cliente;
 
-import br.com.devmedia.cleancode.modelo.Dinheiro;
-import br.com.devmedia.cleancode.modelo.Percentual;
+import br.com.devmedia.cleancode.modelo.comum.Dinheiro;
+import br.com.devmedia.cleancode.modelo.comum.Percentual;
 import br.com.devmedia.cleancode.modelo.pedido.Pedido;
 
 import static br.com.devmedia.cleancode.modelo.cliente.DescontoClienteConstants.*;
@@ -32,11 +32,10 @@ public enum TipoCliente {
     PRATA() {
         @Override
         public Percentual calcularPercentualDesconto(Pedido pedido) {
-
             Dinheiro valorTotalItens = pedido.getValorTotalItens();
 
-            Percentual percentualDesconto = valorTotalItens.compareTo(TRES_MIL) >= 0 ?
-                    DescontoClienteConstants._5_PORCENTO : _3_PORCENTO;
+            Percentual percentualDesconto = (valorTotalItens.compareTo(TRES_MIL) >= 0) ?
+                    _5_PORCENTO : _3_PORCENTO;
 
             if (pedido.possuiItemComValorMaiorOuIgualQue3000()) {
                 percentualDesconto = percentualDesconto.add(_3_PORCENTO);
