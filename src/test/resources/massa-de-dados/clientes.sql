@@ -1,0 +1,1 @@
+insert into cliente(cpf, nome, nascimento, version, id) values ('13076459929', 'José dos Santos','2010-09-17' ,0, -1);

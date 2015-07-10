@@ -29,6 +29,7 @@ public class Cliente implements Serializable {
     Integer version;
 
     @NotNull
+    @Column(unique = true)
     private Cpf cpf;
 
     @NotNull
@@ -42,6 +43,19 @@ public class Cliente implements Serializable {
 
     @Transient
     transient Dinheiro total;
+
+    protected Cliente() {
+    }
+
+    private Cliente(Cpf cpf, Nome nome, DataNascimento nascimento) {
+        this.cpf = cpf;
+        this.nome = nome;
+        this.nascimento = nascimento;
+    }
+
+    public static Cliente newCliente(Cpf cpf, Nome nome, DataNascimento nascimento) {
+        return new Cliente(cpf, nome, nascimento);
+    }
 
     @Override
     public int hashCode() {
@@ -91,7 +105,6 @@ public class Cliente implements Serializable {
     public void setNome(Nome nome) {
         this.nome = nome;
     }
-
 
     public Idade getIdade() {
         return nascimento.getIdade();

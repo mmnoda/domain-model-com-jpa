@@ -26,8 +26,6 @@ public class ConfiguracaoTesteIntegracao {
         factoryBean.setPersistenceUnitName("integration");
         factoryBean.setDataSource(dataSource());
         factoryBean.setPackagesToScan("br.com.devmedia.cleancode.modelo");
-
-
         return factoryBean;
     }
 

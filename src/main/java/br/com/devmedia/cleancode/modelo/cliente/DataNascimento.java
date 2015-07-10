@@ -3,10 +3,9 @@ package br.com.devmedia.cleancode.modelo.cliente;
 import br.com.devmedia.cleancode.infraestrutura.DateTimeUtils;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.ZoneId;
 import java.util.Objects;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
@@ -28,8 +27,8 @@ public class DataNascimento implements Serializable, Comparable<DataNascimento> 
         return new DataNascimento(data);
     }
 
-    public static DataNascimento valueOf(Instant instant) {
-        return valueOf(LocalDate.from(instant));
+    public static DataNascimento valueOf(Date data) {
+        return valueOf(data.toLocalDate());
     }
 
     public static DataNascimento of(int ano, int mes, int dia) {
@@ -55,8 +54,8 @@ public class DataNascimento implements Serializable, Comparable<DataNascimento> 
         return data.format(ofPattern("dd/MM/yyyy"));
     }
 
-    public Instant toInstant() {
-        return data.atStartOfDay(ZoneId.systemDefault()).toInstant();
+    public LocalDate toLocalDate() {
+        return data;
     }
 
     public Idade getIdade() {

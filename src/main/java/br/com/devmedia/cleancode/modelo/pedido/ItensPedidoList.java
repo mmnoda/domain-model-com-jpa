@@ -1,8 +1,9 @@
 package br.com.devmedia.cleancode.modelo.pedido;
 
-import br.com.devmedia.cleancode.modelo.comum.Dinheiro;
 import br.com.devmedia.cleancode.modelo.cliente.DescontoClienteConstants;
+import br.com.devmedia.cleancode.modelo.comum.Dinheiro;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.io.Serializable;
@@ -19,7 +20,7 @@ public class ItensPedidoList implements Serializable, Iterable<ItemPedido> {
 
     private static final long serialVersionUID = -8476382593568230652L;
 
-    @OneToMany(mappedBy = "pedido")
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<ItemPedido> itens = new LinkedList<>();
 
     protected ItensPedidoList() {

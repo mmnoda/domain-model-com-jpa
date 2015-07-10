@@ -30,6 +30,10 @@ public class NumeroPedido implements Serializable, Comparable<NumeroPedido> {
         return new NumeroPedido(id);
     }
 
+    protected static NumeroPedido newNumeroPedido() {
+        return new NumeroPedido();
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id);
@@ -54,5 +58,9 @@ public class NumeroPedido implements Serializable, Comparable<NumeroPedido> {
         return MoreObjects.toStringHelper(this)
                 .add("id", id)
                 .toString();
+    }
+
+    public Integer getId() {
+        return id;
     }
 }

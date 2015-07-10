@@ -1,7 +1,5 @@
-package br.com.devmedia.cleancode.modelo.produto;
+package br.com.devmedia.cleancode.modelo.cliente;
 
-import br.com.devmedia.cleancode.modelo.comum.Descricao;
-import br.com.devmedia.cleancode.modelo.comum.Dinheiro;
 import br.com.devmedia.cleancode.modelo.comum.Nome;
 import br.com.devmedia.cleancode.spring.TesteDeIntegracao;
 import org.junit.Test;
@@ -12,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import static br.com.devmedia.cleancode.modelo.cliente.Cliente.newCliente;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -19,19 +18,19 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @TesteDeIntegracao
 @RunWith(SpringJUnit4ClassRunner.class)
-public class ProdutoIT {
+public class ClienteIT {
 
     @PersistenceContext
     private EntityManager em;
 
-    private Produto produto;
+    private Cliente cliente;
 
     @Test
     @Transactional
-    public void deve_salvar_produto() {
-        produto = Produto.builder().codigo(Codigo.valueOf("123")).descricao(Descricao.valueOf("Teste")).
-                nome(Nome.valueOf("Produto A")).preco(Dinheiro.valueOf(10)).build();
-        em.persist(produto);
-        assertThat(produto.getId()).isNotNull();
+    public void deve_salvar_cliente() {
+        cliente = newCliente(Cpf.valueOf("883.370.725-39"), Nome.valueOf("Cliente Teste"),
+                DataNascimento.of(199, 10, 12));
+        em.persist(cliente);
+        assertThat(cliente.getId()).isNotNull();
     }
 }

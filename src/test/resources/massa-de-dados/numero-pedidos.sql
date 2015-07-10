@@ -1,0 +1,1 @@
+insert into numero_pedido values (1000);
