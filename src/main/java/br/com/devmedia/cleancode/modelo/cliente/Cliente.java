@@ -12,6 +12,8 @@ import java.util.Objects;
 import static br.com.devmedia.cleancode.modelo.cliente.PedidosSet.newPedidosSet;
 import static br.com.devmedia.cleancode.modelo.cliente.TipoCliente.BRONZE;
 import static br.com.devmedia.cleancode.modelo.cliente.TipoCliente.SEM_CLASSIFICACAO;
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.isNull;
 
 /**
  *
@@ -48,9 +50,16 @@ public class Cliente implements Serializable {
     }
 
     private Cliente(Cpf cpf, Nome nome, DataNascimento nascimento) {
+        validar(cpf, nome, nascimento);
         this.cpf = cpf;
         this.nome = nome;
         this.nascimento = nascimento;
+    }
+
+    private void validar(Cpf cpf, Nome nome, DataNascimento nascimento) {
+        checkArgument(!isNull(cpf), "CPF nulo");
+        checkArgument(!isNull(nome), "Nome nulo");
+        checkArgument(!isNull(nascimento), "DataNascimento nulo");
     }
 
     public static Cliente newCliente(Cpf cpf, Nome nome, DataNascimento nascimento) {

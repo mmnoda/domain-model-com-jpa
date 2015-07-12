@@ -14,6 +14,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class DataNascimentoJpaConverterTest {
 
+    private final LocalDate dataEsperada = LocalDate.of(2015, 07, 10);
+
     private DataNascimentoJpaConverter dataNascimentoJpaConverter;
 
     @Before
@@ -23,9 +25,13 @@ public class DataNascimentoJpaConverterTest {
 
     @Test
     public void deve_converter_date_para_nascimento() {
-        LocalDate dataEsperada = LocalDate.of(2015, 07, 10);
         DataNascimento nascimento = dataNascimentoJpaConverter.convertToEntityAttribute(Date.valueOf(dataEsperada));
         assertThat(nascimento).isNotNull().isEqualTo(DataNascimento.valueOf(dataEsperada));
     }
 
+    @Test
+    public void deve_converter_nascimento_para_date() {
+        Date date = dataNascimentoJpaConverter.convertToDatabaseColumn(DataNascimento.valueOf(dataEsperada));
+        assertThat(date).isNotNull().isEqualTo(Date.valueOf(dataEsperada));
+    }
 }

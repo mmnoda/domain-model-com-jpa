@@ -17,6 +17,7 @@ public class Nome implements Serializable, Comparable<Nome> {
     private final String valor;
 
     private Nome(String valor) {
+        checkArgument(!isNullOrEmpty(valor),"Nome nulo ou vazio");
         this.valor = valor.trim().toUpperCase();
     }
 

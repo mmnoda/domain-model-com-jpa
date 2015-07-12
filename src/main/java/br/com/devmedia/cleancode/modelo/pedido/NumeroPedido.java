@@ -8,6 +8,9 @@ import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.isNull;
+
 /**
  *
  */
@@ -23,6 +26,7 @@ public class NumeroPedido implements Serializable, Comparable<NumeroPedido> {
     }
 
     private NumeroPedido(Integer id) {
+        checkArgument(!isNull(id), "Id nulo");
         this.id = id;
     }
 

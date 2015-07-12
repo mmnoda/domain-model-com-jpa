@@ -1,0 +1,1 @@
+insert into pedido(numero, id_cliente, estado, valor_total_itens, desconto, valor_total_final, version, id) values (100, -1, 'F', 1000, 0, 1000, 0, 0);

@@ -14,6 +14,9 @@ import java.util.Objects;
 
 import static br.com.devmedia.cleancode.modelo.pedido.ItensPedidoList.newItensPedidoList;
 import static br.com.devmedia.cleancode.modelo.pedido.StatusPedido.ABERTO;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 /**
  */
@@ -58,9 +61,15 @@ public class Pedido implements Serializable {
     }
 
     private Pedido(Cliente cliente, NumeroPedido numero) {
+        validar(cliente, numero);
         this.cliente = cliente;
         this.numero = numero;
         inicializar();
+    }
+
+    private void validar(Cliente cliente, NumeroPedido numero) {
+        checkArgument(!isNull(cliente), "Cliente nulo");
+        checkNotNull(!isNull(numero), "NumeroPedido nulo");
     }
 
     public static Pedido newPedido(Cliente cliente, NumeroPedido numero) {

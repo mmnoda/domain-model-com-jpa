@@ -63,7 +63,7 @@ public class ItensPedidoList implements Serializable, Iterable<ItemPedido> {
     }
 
     public Dinheiro calcularValorTotalItens() {
-        return itens.stream().map(ItemPedido::getValorTotal).reduce(Dinheiro::add).orElse(Dinheiro.ZERO);
+        return itens.stream().map(ItemPedido::getValorTotal).reduce(Dinheiro::somar).orElse(Dinheiro.ZERO);
     }
 
     public void remove(ItemPedido item) {

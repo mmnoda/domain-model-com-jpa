@@ -3,6 +3,9 @@ package br.com.devmedia.cleancode.modelo.cliente;
 import java.io.Serializable;
 import java.util.Objects;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.isNull;
+
 /**
  *
  */
@@ -13,6 +16,7 @@ public class Idade implements Serializable, Comparable<Idade> {
     private final int valor;
 
     private Idade(int valor) {
+        checkArgument(!isNull(valor), "Idade nulo");
         this.valor = valor;
     }
 

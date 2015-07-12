@@ -80,7 +80,7 @@ public enum TipoCliente {
 
         @Override
         protected TipoCliente proximo() {
-            throw new UnsupportedOperationException("");
+            throw new UnsupportedOperationException();
         }
 
         @Override

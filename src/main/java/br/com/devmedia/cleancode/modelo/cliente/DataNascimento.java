@@ -8,7 +8,9 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.Objects;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.time.format.DateTimeFormatter.ofPattern;
+import static java.util.Objects.isNull;
 
 /**
  *
@@ -20,6 +22,7 @@ public class DataNascimento implements Serializable, Comparable<DataNascimento> 
     private final LocalDate data;
 
     private DataNascimento(LocalDate data) {
+        checkArgument(!isNull(data), "Data nulo");
         this.data = data;
     }
 

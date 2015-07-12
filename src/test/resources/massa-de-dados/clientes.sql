@@ -1,1 +1,2 @@
-insert into cliente(cpf, nome, nascimento, version, id) values ('13076459929', 'José dos Santos','2010-09-17' ,0, -1);
+insert into cliente(cpf, nome, nascimento, version, id) values ('13076459929', 'José dos Santos','2010-09-17' ,0, 0);
+insert into cliente(cpf, nome, nascimento, version, id) values ('85118277906', 'Maria da Silva','1982-11-10' ,0, -1);

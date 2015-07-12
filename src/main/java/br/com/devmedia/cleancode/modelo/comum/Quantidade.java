@@ -5,6 +5,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Objects;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.isNull;
+
 /**
  *
  */
@@ -17,6 +20,7 @@ public class Quantidade implements Serializable, Comparable<Quantidade> {
     private final BigInteger valor;
 
     private Quantidade(BigInteger valor) {
+        checkArgument(!isNull(valor), "Valor da quantidade nulo");
         this.valor = valor;
     }
 

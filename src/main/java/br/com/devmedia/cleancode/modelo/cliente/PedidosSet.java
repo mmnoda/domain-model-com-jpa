@@ -53,7 +53,7 @@ public class PedidosSet implements Serializable, Iterable<Pedido> {
     public Dinheiro calcularTotal() {
         return pedidos.stream().filter(pedido -> pedido.getEstado() == FATURADO).
                 map(Pedido::getValorTotalFinal).
-                reduce(Dinheiro::add).orElse(Dinheiro.ZERO);
+                reduce(Dinheiro::somar).orElse(Dinheiro.ZERO);
     }
 
     @Override

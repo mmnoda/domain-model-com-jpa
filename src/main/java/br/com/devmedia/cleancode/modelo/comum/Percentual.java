@@ -6,6 +6,8 @@ import java.util.Objects;
 
 import static br.com.devmedia.cleancode.infraestrutura.ArredondamentoConstants.ARREDONDAMENTO_PADRAO;
 import static br.com.devmedia.cleancode.infraestrutura.ArredondamentoConstants.CASAS_DECIMAIS;
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.isNull;
 
 /**
  *
@@ -21,6 +23,7 @@ public class Percentual implements Serializable, Comparable<Percentual> {
     private final BigDecimal valor;
 
     private Percentual(BigDecimal valor) {
+        checkArgument(!isNull(valor), "Valor nulo");
         this.valor = valor.setScale(CASAS_DECIMAIS, ARREDONDAMENTO_PADRAO);
     }
 

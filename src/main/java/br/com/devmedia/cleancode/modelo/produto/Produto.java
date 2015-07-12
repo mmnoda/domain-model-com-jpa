@@ -5,10 +5,7 @@ import br.com.devmedia.cleancode.modelo.comum.Dinheiro;
 import br.com.devmedia.cleancode.modelo.comum.Nome;
 import com.google.common.base.MoreObjects;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Version;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
@@ -29,9 +26,11 @@ public class Produto implements Serializable {
     Integer version;
 
     @NotNull
+    @Column(unique = true, length = 30)
     private Codigo codigo;
 
     @NotNull
+    @Column(length = 150)
     private Nome nome;
 
     @NotNull
