@@ -1,6 +1,5 @@
 package br.com.devmedia.cleancode.modelo.pedido;
 
-import br.com.devmedia.cleancode.infraestrutura.FormatadorSingleton;
 import br.com.devmedia.cleancode.modelo.cliente.Cliente;
 import br.com.devmedia.cleancode.modelo.cliente.TipoCliente;
 import br.com.devmedia.cleancode.modelo.comum.Dinheiro;
@@ -135,7 +134,7 @@ public class Pedido implements Serializable {
 
     void aplicarDesconto() {
         final TipoCliente tipoCliente = cliente.calcularTipoCliente();
-        Percentual percentualDesconto = tipoCliente.calcularPercentualDesconto(this);
+        final Percentual percentualDesconto = tipoCliente.calcularPercentualDesconto(this);
         desconto = percentualDesconto.calcular(valorTotalItens);
     }
 
@@ -163,10 +162,6 @@ public class Pedido implements Serializable {
         this.estado = estado;
     }
 
-    public String getValorTotalItensAsString() {
-        return FormatadorSingleton.INSTANCE.formatar(valorTotalItens.toBigDecimal());
-    }
-
     public Integer getId() {
         return id;
     }
@@ -183,24 +178,12 @@ public class Pedido implements Serializable {
         return valorTotalItens;
     }
 
-    public void setValorTotalItens(Dinheiro valorTotalItens) {
-        this.valorTotalItens = valorTotalItens;
-    }
-
     public Dinheiro getDesconto() {
         return desconto;
     }
 
-    public void setDesconto(Dinheiro desconto) {
-        this.desconto = desconto;
-    }
-
     public Dinheiro getValorTotalFinal() {
         return valorTotalFinal;
-    }
-
-    public void setValorTotalFinal(Dinheiro valorTotalFinal) {
-        this.valorTotalFinal = valorTotalFinal;
     }
 
     public ItensPedidoList getItens() {

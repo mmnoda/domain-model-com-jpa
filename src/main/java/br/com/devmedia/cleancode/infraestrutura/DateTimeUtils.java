@@ -11,12 +11,12 @@ import java.time.ZoneId;
 public enum DateTimeUtils {
     INSTANCE;
 
-    private ZoneId zone = ZoneId.systemDefault();
+    private final ZoneId zone;
     private Clock clock;
 
     DateTimeUtils() {
         zone = ZoneId.systemDefault();
-        setPadrao();
+        setClockPadrao();
     }
 
     public void fixar(LocalDateTime dataHora) {
@@ -35,7 +35,7 @@ public enum DateTimeUtils {
         return clock;
     }
 
-    public void setPadrao() {
+    public void setClockPadrao() {
         clock = Clock.systemDefaultZone();
     }
 }

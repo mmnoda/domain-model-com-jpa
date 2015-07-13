@@ -22,4 +22,15 @@ public class AmbienteCliente {
     public Cliente getJoseDosSantos() {
         return em.find(Cliente.class, 0);
     }
+
+    public Cliente getClienteBronze() {
+        return em.find(Cliente.class, -2);
+    }
+
+    public Cliente getClientePrata() {
+        return em.find(Cliente.class, -3);
+    }
+    public Cliente getClienteOuro() {
+        return em.find(Cliente.class, -4);
+    }
 }

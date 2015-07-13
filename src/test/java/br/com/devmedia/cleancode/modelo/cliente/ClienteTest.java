@@ -58,19 +58,21 @@ public class ClienteTest {
     public void tearDown() {
         pedidos.clear();
         reset(pedidoFaturado1, pedidoFaturado2, pedidoCancelado, pedidoAberto);
-        dateTimeUtils.setPadrao();
+        dateTimeUtils.setClockPadrao();
     }
 
     @Test
     public void deve_ser_igual_ao_proprio() {
         cliente.setCpf(cpfQualquer);
-        assertThat(cliente).isEqualTo(cliente);
+        assertClienteIgual(cliente);
     }
 
     @Test
     public void deve_implementar_equals_consistente() {
         cliente.setCpf(cpfQualquer);
-        assertClienteIgual();
+        Cliente outroIgual = new Cliente();
+        outroIgual.setCpf(cpfQualquer);
+        assertClienteIgual(outroIgual);
         assertClienteDiferente();
     }
 
@@ -141,12 +143,12 @@ public class ClienteTest {
         Cliente outroDiferente = new Cliente();
         outroDiferente.setCpf(Cpf.valueOf("31692172751"));
         assertThat(cliente).isNotEqualTo(outroDiferente);
+        assertThat(cliente.hashCode()).isNotEqualTo(outroDiferente.hashCode());
     }
 
-    private void assertClienteIgual() {
-        Cliente outroIgual = new Cliente();
-        outroIgual.setCpf(cpfQualquer);
+    private void assertClienteIgual(Cliente outroIgual) {
         assertThat(cliente).isEqualTo(outroIgual);
+        assertThat(cliente.hashCode()).isEqualTo(outroIgual.hashCode());
     }
 
     private void mockValorTotalDoPedidoFaturado2Como(Dinheiro valorTotalFinal) {

@@ -22,13 +22,18 @@ public class PedidosSet implements Serializable, Iterable<Pedido> {
     private static final long serialVersionUID = -7854382052392174092L;
 
     @OneToMany(mappedBy = "cliente")
-    private Set<Pedido> pedidos = new LinkedHashSet<>();
+    Set<Pedido> pedidos;
 
     protected PedidosSet() {
     }
 
     protected static PedidosSet newPedidosSet() {
-        return new PedidosSet();
+        return new PedidosSet().inicializar();
+    }
+
+    private PedidosSet inicializar() {
+        pedidos = new LinkedHashSet<>();
+        return this;
     }
 
     @Override

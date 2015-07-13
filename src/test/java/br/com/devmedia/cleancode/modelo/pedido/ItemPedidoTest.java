@@ -38,25 +38,13 @@ public class ItemPedidoTest {
 
     @Test
     public void deve_ser_igual_ao_proprio() {
-        assertThat(itemPedido).isEqualTo(itemPedido);
+        assertItemPedidoIgual(itemPedido);
     }
 
     @Test
     public void deve_implementar_equals_consistente() {
-        assertItemPedidoIgual();
+        assertItemPedidoIgual(newItemPedido(pedido, produtoA, Quantidade.valueOf(23)));
         assertItemPedidoDiferente();
-    }
-
-    private void assertItemPedidoDiferente() {
-        ItemPedido outroDiferente = newItemPedido(pedido, produtoB, Quantidade.valueOf(12));
-        assertThat(itemPedido).isNotEqualTo(outroDiferente);
-        assertThat(itemPedido.hashCode()).isNotEqualTo(outroDiferente.hashCode());
-    }
-
-    private void assertItemPedidoIgual() {
-        ItemPedido outroIgual = newItemPedido(pedido, produtoA, Quantidade.valueOf(23));
-        assertThat(itemPedido).isEqualTo(outroIgual);
-        assertThat(itemPedido.hashCode()).isEqualTo(outroIgual.hashCode());
     }
 
     @Test
@@ -68,6 +56,18 @@ public class ItemPedidoTest {
     @Test
     public void deve_manter_valor_total_consistente_apos_alterar_a_quantidade_de_itens() {
         itemPedido.setQuantidade(Quantidade.UM);
+        assertThat(itemPedido.getQuantidade()).isEqualTo(Quantidade.UM);
         assertThat(itemPedido.getValorTotal()).isEqualTo(PRECO_PADRAO_PRODUTO);
+    }
+
+    private void assertItemPedidoDiferente() {
+        ItemPedido outroDiferente = newItemPedido(pedido, produtoB, Quantidade.valueOf(12));
+        assertThat(itemPedido).isNotEqualTo(outroDiferente);
+        assertThat(itemPedido.hashCode()).isNotEqualTo(outroDiferente.hashCode());
+    }
+
+    private void assertItemPedidoIgual(ItemPedido outroIgual) {
+        assertThat(itemPedido).isEqualTo(outroIgual);
+        assertThat(itemPedido.hashCode()).isEqualTo(outroIgual.hashCode());
     }
 }

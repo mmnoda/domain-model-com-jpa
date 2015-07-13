@@ -1,6 +1,5 @@
 package br.com.devmedia.cleancode.modelo.comum;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -17,12 +16,11 @@ public class Nome implements Serializable, Comparable<Nome> {
     private final String valor;
 
     private Nome(String valor) {
-        checkArgument(!isNullOrEmpty(valor),"Nome nulo ou vazio");
+        checkArgument(!isNullOrEmpty(valor), "Nome nulo ou vazio");
         this.valor = valor.trim().toUpperCase();
     }
 
     public static Nome valueOf(String valor) {
-        checkArgument(!isNullOrEmpty(valor), "Nome nulo ou vazio");
         return new Nome(valor);
     }
 
@@ -46,7 +44,7 @@ public class Nome implements Serializable, Comparable<Nome> {
     }
 
     @Override
-    public int compareTo(@NotNull Nome o) {
+    public int compareTo(Nome o) {
         return valor.compareTo(o.valor);
     }
 }

@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class CpfJpaConverterTest {
 
-    public final String CPF_ESPERADO = "97785537852";
+    private final String CPF_ESPERADO = "97785537852";
 
     private CpfJpaConverter cpfJpaConverter;
 
@@ -21,13 +21,13 @@ public class CpfJpaConverterTest {
     }
 
     @Test
-    public void deve_converter_de_string_para_cpf() {
+    public void deve_converter_string_para_cpf() {
         Cpf cpf = cpfJpaConverter.convertToEntityAttribute(CPF_ESPERADO);
         assertThat(cpf).isNotNull().isEqualTo(Cpf.valueOf(CPF_ESPERADO));
     }
 
     @Test
-    public void deve_converter_de_cpf_para_string() {
+    public void deve_converter_cpf_para_string() {
         String cpf = cpfJpaConverter.convertToDatabaseColumn(Cpf.valueOf(CPF_ESPERADO));
         assertThat(cpf).isNotNull().isEqualTo(CPF_ESPERADO);
     }

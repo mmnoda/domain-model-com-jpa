@@ -14,7 +14,7 @@ public class CodigoTest {
     @Test
     public void deve_ser_igual_ao_proprio() {
         codigo = Codigo.valueOf("123");
-        assertThat(codigo).isEqualTo(codigo);
+        assertCodigoIgualA(codigo);
     }
 
     @Test
@@ -26,10 +26,12 @@ public class CodigoTest {
 
     private void assertCodigoIgualA(Codigo codigoIgual) {
         assertThat(codigo).isEqualTo(codigoIgual);
+        assertThat(codigo.hashCode()).isEqualTo(codigoIgual.hashCode());
     }
 
     private void assertCodigoDiferenteDe(Codigo codigoDiferente) {
         assertThat(codigo).isNotEqualTo(codigoDiferente);
+        assertThat(codigo.hashCode()).isNotEqualTo(codigoDiferente.hashCode());
     }
 
 }

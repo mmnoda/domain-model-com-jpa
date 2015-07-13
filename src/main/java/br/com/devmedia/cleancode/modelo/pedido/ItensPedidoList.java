@@ -1,6 +1,5 @@
 package br.com.devmedia.cleancode.modelo.pedido;
 
-import br.com.devmedia.cleancode.modelo.cliente.DescontoClienteConstants;
 import br.com.devmedia.cleancode.modelo.comum.Dinheiro;
 
 import javax.persistence.CascadeType;
@@ -12,6 +11,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+import static br.com.devmedia.cleancode.modelo.cliente.DescontoClienteConstants.TRES_MIL;
+
 /**
  *
  */
@@ -21,13 +22,18 @@ public class ItensPedidoList implements Serializable, Iterable<ItemPedido> {
     private static final long serialVersionUID = -8476382593568230652L;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
-    private List<ItemPedido> itens = new LinkedList<>();
+    List<ItemPedido> itens;
 
     protected ItensPedidoList() {
     }
 
     public static ItensPedidoList newItensPedidoList() {
-        return new ItensPedidoList();
+        return new ItensPedidoList().inicializar();
+    }
+
+    private ItensPedidoList inicializar() {
+        itens = new LinkedList<>();
+        return this;
     }
 
     @Override
@@ -53,20 +59,24 @@ public class ItensPedidoList implements Serializable, Iterable<ItemPedido> {
         itens.add(item);
     }
 
+    public void remove(ItemPedido item) {
+        itens.remove(item);
+    }
+
+    public void clear() {
+        itens.clear();
+    }
+
     @Override
     public Iterator<ItemPedido> iterator() {
         return itens.iterator();
     }
 
     public boolean possuiItemComValorMaiorOuIgualQue3000() {
-        return itens.stream().anyMatch(item -> item.getValorUnitario().compareTo(DescontoClienteConstants.TRES_MIL) >= 0);
+        return itens.stream().anyMatch(item -> item.getValorUnitario().compareTo(TRES_MIL) >= 0);
     }
 
     public Dinheiro calcularValorTotalItens() {
         return itens.stream().map(ItemPedido::getValorTotal).reduce(Dinheiro::somar).orElse(Dinheiro.ZERO);
-    }
-
-    public void remove(ItemPedido item) {
-        itens.remove(item);
     }
 }

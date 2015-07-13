@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 
 @EnableTransactionManagement(proxyTargetClass = true)
 @Configuration
-public class ConfiguracaoBancoDados {
+class ConfiguracaoBancoDados {
 
     @Autowired
     private EntityManagerFactory entityManagerFactory;

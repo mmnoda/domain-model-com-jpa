@@ -1,6 +1,5 @@
 package br.com.devmedia.cleancode.modelo.comum.converter;
 
-import br.com.devmedia.cleancode.modelo.comum.Dinheiro;
 import br.com.devmedia.cleancode.modelo.comum.Percentual;
 import org.junit.Before;
 import org.junit.Test;

@@ -14,7 +14,7 @@ public class IdadeTest {
     @Test
     public void deve_ser_igual_ao_proprio() {
         idade = Idade.valueOf(10);
-        assertThat(idade).isEqualTo(idade);
+        assertIdadeIgualA(idade);
     }
 
     @Test
@@ -36,11 +36,20 @@ public class IdadeTest {
         assertThat(idade.isMaiorIdade()).isTrue();
     }
 
+    @Test
+    public void deve_imprimir_to_string_corretamente() {
+        idade = Idade.valueOf(84);
+        assertThat(idade.toString()).isNotNull().isEqualTo("84 ano(s)") ;
+
+    }
+
     private void assertIdadeIgualA(Idade idadeIgual) {
         assertThat(idade).isEqualTo(idadeIgual);
+        assertThat(idade.hashCode()).isEqualTo(idadeIgual.hashCode());
     }
 
     private void assertIdadeDiferenteDe(Idade idadeDiferente) {
         assertThat(idade).isNotEqualTo(idadeDiferente);
+        assertThat(idade.hashCode()).isNotEqualTo(idadeDiferente.hashCode());
     }
 }

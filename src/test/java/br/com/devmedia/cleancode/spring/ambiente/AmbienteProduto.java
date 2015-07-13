@@ -22,4 +22,12 @@ public class AmbienteProduto {
     public Produto getArroz() {
         return em.find(Produto.class, 0);
     }
+
+    public Produto getAbc() {
+        return em.find(Produto.class, -3);
+    }
+
+    public Produto getTv() {
+        return em.find(Produto.class, -4);
+    }
 }

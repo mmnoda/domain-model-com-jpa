@@ -40,7 +40,7 @@ public class Idade implements Serializable, Comparable<Idade> {
 
     @Override
     public String toString() {
-        return String.valueOf(valor);
+        return String.format("%s ano(s)", valor);
     }
 
     public boolean isMaiorIdade() {

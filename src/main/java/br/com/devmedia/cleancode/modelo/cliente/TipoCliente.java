@@ -1,6 +1,5 @@
 package br.com.devmedia.cleancode.modelo.cliente;
 
-import br.com.devmedia.cleancode.modelo.comum.Dinheiro;
 import br.com.devmedia.cleancode.modelo.comum.Percentual;
 import br.com.devmedia.cleancode.modelo.pedido.Pedido;
 
@@ -14,8 +13,12 @@ public enum TipoCliente {
     BRONZE() {
         @Override
         public Percentual calcularPercentualDesconto(Pedido pedido) {
-            return pedido.getValorTotalItens().compareTo(QUINHENTOS) >= 0 ?
+            return possuiValorTotalItensMaiorQue500(pedido) ?
                     _3_PORCENTO : Percentual.ZERO;
+        }
+
+        private boolean possuiValorTotalItensMaiorQue500(Pedido pedido) {
+            return pedido.getValorTotalItens().compareTo(QUINHENTOS) >= 0;
         }
 
         @Override
@@ -32,9 +35,8 @@ public enum TipoCliente {
     PRATA() {
         @Override
         public Percentual calcularPercentualDesconto(Pedido pedido) {
-            Dinheiro valorTotalItens = pedido.getValorTotalItens();
 
-            Percentual percentualDesconto = (valorTotalItens.compareTo(TRES_MIL) >= 0) ?
+            Percentual percentualDesconto = possuiValorTotalItensMaiorQue3000(pedido) ?
                     _5_PORCENTO : _3_PORCENTO;
 
             if (pedido.possuiItemComValorMaiorOuIgualQue3000()) {
@@ -42,6 +44,10 @@ public enum TipoCliente {
             }
 
             return percentualDesconto;
+        }
+
+        private boolean possuiValorTotalItensMaiorQue3000(Pedido pedido) {
+            return  pedido.getValorTotalItens().compareTo(TRES_MIL) >= 0;
         }
 
         @Override

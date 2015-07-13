@@ -1,8 +1,12 @@
 package br.com.devmedia.cleancode.modelo.comum;
 
+import br.com.devmedia.cleancode.infraestrutura.FormatadorSingleton;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Formattable;
+import java.util.Formatter;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -11,7 +15,7 @@ import static java.util.Objects.isNull;
 /**
  *
  */
-public class Quantidade implements Serializable, Comparable<Quantidade> {
+public class Quantidade implements Serializable, Comparable<Quantidade>, Formattable {
 
     private static final long serialVersionUID = 4868785344958171893L;
 
@@ -62,5 +66,10 @@ public class Quantidade implements Serializable, Comparable<Quantidade> {
 
     public BigDecimal toBigDecimal() {
         return new BigDecimal(valor);
+    }
+
+    @Override
+    public void formatTo(Formatter formatter, int flags, int width, int precision) {
+        formatter.format(FormatadorSingleton.INSTANCE.formatar(valor));
     }
 }

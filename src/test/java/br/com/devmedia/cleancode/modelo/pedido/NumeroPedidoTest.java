@@ -14,7 +14,7 @@ public class NumeroPedidoTest {
     @Test
     public void deve_ser_igual_ao_proprio() {
         numeroPedido = NumeroPedido.valueOf(10);
-        assertThat(numeroPedido).isEqualTo(numeroPedido);
+        assertNumeroPedidoIgualA(numeroPedido);
     }
 
     @Test
@@ -26,10 +26,11 @@ public class NumeroPedidoTest {
 
     private void assertNumeroPedidoDiferenteDe(NumeroPedido numeroPedidoDiferente) {
         assertThat(numeroPedido).isNotEqualTo(numeroPedidoDiferente);
+        assertThat(numeroPedido.hashCode()).isNotEqualTo(numeroPedidoDiferente.hashCode());
     }
 
     private void assertNumeroPedidoIgualA(NumeroPedido numeroPedidoIgual) {
-        assertThat(numeroPedido).isEqualTo(numeroPedidoIgual);
+        assertThat(numeroPedido.hashCode()).isEqualTo(numeroPedidoIgual.hashCode());
     }
 
 }

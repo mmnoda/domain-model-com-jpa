@@ -46,6 +46,10 @@ public class PedidoIT {
     @Autowired
     private AmbientePedido ambientePedido;
 
+    private NumeroPedido numeroPedido;
+
+    private Cliente cliente;
+
     private Produto produto;
 
     private Pedido pedido;
@@ -53,21 +57,59 @@ public class PedidoIT {
     @Test
     @Transactional
     public void deve_faturar_novo_pedido() {
+        setClienteJoseDosSantos();
         buildPedido();
-        adicionarItemPedido();
+        adicionarItemArrozAoPedido(Quantidade.valueOf(15));
         faturar();
-        em.persist(pedido);
-        assertPedidoSalvo();
-        assertEstadoPedidoIgualA(FATURADO);
-        assertThat(pedido.getValorTotalItens()).isEqualTo(Dinheiro.valueOf(90));
+        salvar();
+        assertPedidoFaturadoComSucessoComValorTotalDosItensIgualA(Dinheiro.valueOf(90));
     }
 
     @Test
     @Transactional
     public void deve_cancelar_pedido_faturado() {
         carregarPedidoFaturado();
-        pedido.cancelar();
+        cancelar();
         assertEstadoPedidoIgualA(CANCELADO);
+    }
+
+    @Test
+    @Transactional
+    public void deve_faturar_pedido_com_desconto_para_cliente_BRONZE() {
+        setClienteBronze();
+        buildPedido();
+        adicionarItemPedidoClienteBronze();
+        faturar();
+        salvar();
+        assertPedidoFaturadoComSucessoComValorTotalDosItensIgualA(Dinheiro.valueOf(500));
+        assertValorDescontoIgualA(Dinheiro.valueOf(15));
+        assertValorTotalFinalIgualA(Dinheiro.valueOf(485));
+    }
+
+    @Test
+    @Transactional
+    public void deve_faturar_pedido_com_desconto_de_8_porcento_para_cliente_PRATA() {
+        setClientePrata();
+        buildPedido();
+        adicionarItensPedidoClientePrata();
+        faturar();
+        salvar();
+        assertPedidoFaturadoComSucessoComValorTotalDosItensIgualA(Dinheiro.valueOf(3090));
+        assertValorDescontoIgualA(Dinheiro.valueOf(247.20));
+        assertValorTotalFinalIgualA(Dinheiro.valueOf(2842.80));
+    }
+
+    @Test
+    @Transactional
+    public void deve_faturar_pedido_com_desconto_para_cliente_OURO() {
+        setClienteOuro();
+        buildPedido();
+        adicionarItensPedidoClienteOuro();
+        faturar();
+        salvar();
+        assertPedidoFaturadoComSucessoComValorTotalDosItensIgualA(Dinheiro.valueOf(11518));
+        assertValorDescontoIgualA(Dinheiro.valueOf(1151.80));
+        assertValorTotalFinalIgualA(Dinheiro.valueOf(10366.20));
     }
 
     @Test
@@ -79,8 +121,51 @@ public class PedidoIT {
         assertPedidoExcluido();
     }
 
+    private void setClienteBronze() {
+        cliente = ambienteCliente.getClienteBronze();
+    }
+
+    private void setClientePrata() {
+        cliente = ambienteCliente.getClientePrata();
+    }
+
+    private void setClienteOuro() {
+        cliente = ambienteCliente.getClienteOuro();
+    }
+
+    private void setClienteJoseDosSantos() {
+        cliente = ambienteCliente.getJoseDosSantos();
+    }
+
+    private void assertPedidoFaturadoComSucessoComValorTotalDosItensIgualA(Dinheiro valorEsperado) {
+        assertPedidoSalvo();
+        assertEstadoPedidoIgualA(FATURADO);
+        assertValorTotalItensIgualA(valorEsperado);
+    }
+
+    private void adicionarItensPedidoClienteOuro() {
+        adicionarItemAbcAoPedido(Quantidade.valueOf(25));
+        adicionarItemTvAoPedido(Quantidade.valueOf(3));
+        adicionarItemArrozAoPedido(Quantidade.valueOf(3));
+    }
+
+    private void adicionarItensPedidoClientePrata() {
+        adicionarItemTvAoPedido(Quantidade.UM);
+        adicionarItemArrozAoPedido(Quantidade.valueOf(15));
+    }
+
+    private void adicionarItemPedidoClienteBronze() {
+        adicionarItemAbcAoPedido(Quantidade.valueOf(5));
+    }
+
+    private void cancelar() {
+        pedido.cancelar();
+    }
+
     private void assertPedidoFaturadoCom2Itens() {
-        assertThat(pedido.getItens()).isNotNull().isNotEmpty().hasSize(2);
+        ItensPedidoList itens = pedido.getItens();
+        assertThat(itens).isNotNull().isNotEmpty().hasSize(2);
+        itens.forEach(item -> assertThat(item.getId()).isNotNull());
     }
 
     private void faturar() {
@@ -91,8 +176,19 @@ public class PedidoIT {
         pedido = ambientePedido.getPedidoFaturado();
     }
 
-    private void adicionarItemPedido() {
-        pedido.adicionar(newItemPedido(pedido, produto, Quantidade.valueOf(15)));
+    private void adicionarItemArrozAoPedido(Quantidade quantidade) {
+        produto = ambienteProduto.getArroz();
+        pedido.adicionar(newItemPedido(pedido, produto, quantidade));
+    }
+
+    private void adicionarItemAbcAoPedido(Quantidade quantidade) {
+        produto = ambienteProduto.getAbc();
+        pedido.adicionar(newItemPedido(pedido, produto, quantidade));
+    }
+
+    private void adicionarItemTvAoPedido(Quantidade quantidade) {
+        produto = ambienteProduto.getTv();
+        pedido.adicionar(newItemPedido(pedido, produto, quantidade));
     }
 
     private void assertEstadoPedidoIgualA(StatusPedido cancelado) {
@@ -101,7 +197,9 @@ public class PedidoIT {
 
     private void assertPedidoSalvo() {
         assertThat(pedido.getId()).isNotNull().isGreaterThan(0);
-        assertThat(pedido.version).isEqualTo(0);
+        assertThat(pedido.version).isNotNull().isEqualTo(0);
+        assertThat(pedido.getNumero()).isNotNull().isEqualTo(numeroPedido);
+        assertThat(pedido.getCliente()).isNotNull().isEqualTo(cliente);
     }
 
     private void assertPedidoExcluido() {
@@ -109,9 +207,23 @@ public class PedidoIT {
     }
 
     private void buildPedido() {
-        Cliente cliente = ambienteCliente.getJoseDosSantos();
-        NumeroPedido numeroPedido = ambienteNumeroPedido.getNumero1000();
-        produto = ambienteProduto.getArroz();
+        numeroPedido = ambienteNumeroPedido.getNumero1000();
         pedido = newPedido(cliente, numeroPedido);
+    }
+
+    private void salvar() {
+        em.persist(pedido);
+    }
+
+    private void assertValorTotalItensIgualA(Dinheiro valorEsperado) {
+        assertThat(pedido.getValorTotalItens()).isEqualTo(valorEsperado);
+    }
+
+    private void assertValorDescontoIgualA(Dinheiro valorEsperado) {
+        assertThat(pedido.getDesconto()).isEqualTo(valorEsperado);
+    }
+
+    private void assertValorTotalFinalIgualA(Dinheiro valorEsperado) {
+        assertThat(pedido.getValorTotalFinal()).isEqualTo(valorEsperado);
     }
 }

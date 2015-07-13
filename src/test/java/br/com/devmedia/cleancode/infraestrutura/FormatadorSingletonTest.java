@@ -34,7 +34,7 @@ public class FormatadorSingletonTest {
     }
 
     @Test(expected = ParseException.class)
-    public void deve_validar_parse_de_string_incorreto() throws ParseException {
+    public void deve_validar_parse_de_string_invalido() throws ParseException {
         formatadorSingleton.parse(" 1234567,89 ");
         fail("Parse incorreto");
     }

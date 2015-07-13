@@ -38,6 +38,7 @@ public class ProdutoIT {
                 nome(Nome.valueOf("Produto A")).preco(Dinheiro.valueOf(10)).build();
         em.persist(produto);
         assertThat(produto.getId()).isNotNull();
+        assertThat(produto.version).isNotNull().isEqualTo(0);
     }
 
     @Test

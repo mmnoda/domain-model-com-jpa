@@ -44,7 +44,7 @@ public class Cliente implements Serializable {
     PedidosSet pedidos = newPedidosSet();
 
     @Transient
-    transient Dinheiro total;
+    private transient Dinheiro total;
 
     protected Cliente() {
     }

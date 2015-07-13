@@ -14,7 +14,7 @@ public class NomeTest {
     @Test
     public void deve_ser_igual_ao_proprio() {
         nome = Nome.valueOf("João da Silva");
-        assertThat(nome).isEqualTo(nome);
+        assertNomeIgualA(nome);
     }
 
     @Test
@@ -32,10 +32,12 @@ public class NomeTest {
 
     private void assertNomeIgualA(Nome nomeIgual) {
         assertThat(nome).isEqualTo(nomeIgual);
+        assertThat(nome.hashCode()).isEqualTo(nomeIgual.hashCode());
     }
 
     private void assertNomeDiferenteDe(Nome nomeDiferente) {
         assertThat(nome).isNotEqualTo(nomeDiferente);
+        assertThat(nome.hashCode()).isNotEqualTo(nomeDiferente.hashCode());
     }
 
 }

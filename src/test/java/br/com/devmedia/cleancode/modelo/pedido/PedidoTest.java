@@ -1,8 +1,8 @@
 package br.com.devmedia.cleancode.modelo.pedido;
 
-import br.com.devmedia.cleancode.modelo.comum.Dinheiro;
 import br.com.devmedia.cleancode.modelo.cliente.Cliente;
 import br.com.devmedia.cleancode.modelo.cliente.TipoCliente;
+import br.com.devmedia.cleancode.modelo.comum.Dinheiro;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +21,7 @@ public class PedidoTest {
 
     private Pedido pedido;
 
-    private Cliente cliente = mock(Cliente.class);
+    private final Cliente cliente = mock(Cliente.class);
 
     private final Dinheiro valorTotalItem1 = Dinheiro.valueOf(499);
     private final Dinheiro valorTotalItem2 = Dinheiro.valueOf(2000);
@@ -31,12 +31,12 @@ public class PedidoTest {
     private final Dinheiro somaItens1e2e3 = valorTotalItem1.add(valorTotalItem2).add(valorTotalItem3);
     private final Dinheiro somaTodosItens = somaItens1e2e3.add(valorTotalItem4);
 
-    private ItemPedido item1 = mock(ItemPedido.class);
-    private ItemPedido item2 = mock(ItemPedido.class);
-    private ItemPedido item3 = mock(ItemPedido.class);
-    private ItemPedido item4 = mock(ItemPedido.class);
+    private final ItemPedido item1 = mock(ItemPedido.class);
+    private final ItemPedido item2 = mock(ItemPedido.class);
+    private final ItemPedido item3 = mock(ItemPedido.class);
+    private final ItemPedido item4 = mock(ItemPedido.class);
 
-    private NumeroPedido numero = mock(NumeroPedido.class);
+    private final NumeroPedido numero = mock(NumeroPedido.class);
 
     private ItensPedidoList itens;
 
@@ -65,27 +65,15 @@ public class PedidoTest {
 
     @Test
     public void deve_ser_igual_ao_proprio() {
-        assertThat(pedido).isEqualTo(pedido);
+        assertPedidoIgual(pedido);
     }
 
     @Test
     public void deve_implementar_equals_consistente() {
-        assertPedidoIgual();
-        assertPedidoDiferente();
-    }
-
-    private void assertPedidoDiferente() {
-        Pedido outroDiferente = new Pedido();
-        outroDiferente.numero = mock(NumeroPedido.class);
-        assertThat(pedido).isNotEqualTo(outroDiferente);
-        assertThat(pedido.hashCode()).isNotEqualTo(outroDiferente.hashCode());
-    }
-
-    private void assertPedidoIgual() {
         Pedido outroIgual = new Pedido();
         outroIgual.numero = numero;
-        assertThat(pedido).isEqualTo(outroIgual);
-        assertThat(pedido.hashCode()).isEqualTo(outroIgual.hashCode());
+        assertPedidoIgual(outroIgual);
+        assertPedidoDiferente();
     }
 
     @Test
@@ -123,18 +111,10 @@ public class PedidoTest {
         faturar();
     }
 
-    private void setEstadoPedidoFaturado() {
-        pedido.estado = FATURADO;
-    }
-
     @Test(expected = IllegalStateException.class)
     public void deve_impedir_o_faturamento_de_pedido_cancelado() {
         setEstadoPedidoCancelado();
         faturar();
-    }
-
-    private void setEstadoPedidoCancelado() {
-        pedido.estado = CANCELADO;
     }
 
     @Test
@@ -148,10 +128,6 @@ public class PedidoTest {
     public void deve_impedir_o_cancelamento_de_pedido_aberto() {
         setEstadoPedidoAberto();
         pedido.cancelar();
-    }
-
-    private void setEstadoPedidoAberto() {
-        pedido.estado = ABERTO;
     }
 
     @Test(expected = IllegalStateException.class)
@@ -169,10 +145,6 @@ public class PedidoTest {
         verificarExecucaoGetValorTotalDosItens1e2e3();
         assertDescontoPedidoZero();
         assertValorTotalFinalIgualASomaDeTodosOsItens();
-    }
-
-    private void faturar() {
-        pedido.faturar();
     }
 
     @Test
@@ -251,6 +223,34 @@ public class PedidoTest {
         assertValorTotalItensPedidoIgualAoValorItem1();
         assertDescontoPedidoIgualAoValorDe(Dinheiro.valueOf(49.90));
         assertValorTotalFinalPedidoIgualAoValorDe(Dinheiro.valueOf(449.10));
+    }
+
+    private void setEstadoPedidoAberto() {
+        pedido.estado = ABERTO;
+    }
+
+    private void setEstadoPedidoCancelado() {
+        pedido.estado = CANCELADO;
+    }
+
+    private void faturar() {
+        pedido.faturar();
+    }
+
+    private void setEstadoPedidoFaturado() {
+        pedido.estado = FATURADO;
+    }
+
+    private void assertPedidoDiferente() {
+        Pedido outroDiferente = new Pedido();
+        outroDiferente.numero = mock(NumeroPedido.class);
+        assertThat(pedido).isNotEqualTo(outroDiferente);
+        assertThat(pedido.hashCode()).isNotEqualTo(outroDiferente.hashCode());
+    }
+
+    private void assertPedidoIgual(Pedido outroIgual) {
+        assertThat(pedido).isEqualTo(outroIgual);
+        assertThat(pedido.hashCode()).isEqualTo(outroIgual.hashCode());
     }
 
     private void assertDescontoPedidoIgualAoValorDe(Dinheiro desconto) {

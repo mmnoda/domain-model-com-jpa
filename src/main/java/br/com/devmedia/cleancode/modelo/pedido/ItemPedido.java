@@ -97,10 +97,6 @@ public class ItemPedido implements Serializable {
         return pedido;
     }
 
-    public void setPedido(Pedido pedido) {
-        this.pedido = pedido;
-    }
-
     public Produto getProduto() {
         return produto;
     }
@@ -118,15 +114,8 @@ public class ItemPedido implements Serializable {
         return valorUnitario;
     }
 
-    public void setValorUnitario(Dinheiro valorUnitario) {
-        this.valorUnitario = valorUnitario;
-    }
-
     public Dinheiro getValorTotal() {
         return valorTotal;
     }
 
-    public void setValorTotal(Dinheiro valorTotal) {
-        this.valorTotal = valorTotal;
-    }
 }

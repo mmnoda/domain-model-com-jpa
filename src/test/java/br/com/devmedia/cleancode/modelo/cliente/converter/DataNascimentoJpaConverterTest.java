@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class DataNascimentoJpaConverterTest {
 
-    private final LocalDate dataEsperada = LocalDate.of(2015, 07, 10);
+    private final LocalDate dataEsperada = LocalDate.of(2015, 7, 10);
 
     private DataNascimentoJpaConverter dataNascimentoJpaConverter;
 

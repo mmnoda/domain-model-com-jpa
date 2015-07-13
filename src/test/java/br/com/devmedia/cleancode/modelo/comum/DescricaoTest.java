@@ -14,7 +14,7 @@ public class DescricaoTest {
     @Test
     public void deve_ser_igual_ao_proprio() {
         descricao = Descricao.valueOf("teste");
-        assertThat(descricao).isEqualTo(descricao);
+        assertDescricaoIgualA(descricao);
     }
 
     @Test
@@ -26,10 +26,12 @@ public class DescricaoTest {
 
     private void assertDescricaoIgualA(Descricao descricaoIgual) {
         assertThat(descricao).isEqualTo(descricaoIgual);
+        assertThat(descricao.hashCode()).isEqualTo(descricaoIgual.hashCode());
     }
 
     private void assertDescricaoDiferenteDe(Descricao descricaoDiferente) {
         assertThat(descricao).isNotEqualTo(descricaoDiferente);
+        assertThat(descricao.hashCode()).isNotEqualTo(descricaoDiferente.hashCode());
     }
 
 }

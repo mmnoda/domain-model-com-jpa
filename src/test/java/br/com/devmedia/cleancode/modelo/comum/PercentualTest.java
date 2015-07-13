@@ -14,7 +14,7 @@ public class PercentualTest {
     @Test
     public void deve_ser_igual_ao_proprio() {
         percentual = Percentual.valueOf(100);
-        assertThat(percentual).isEqualTo(percentual);
+        assertPercentualIgualA(percentual);
     }
 
     @Test
@@ -31,12 +31,21 @@ public class PercentualTest {
                 isEqualTo(Dinheiro.valueOf(500));
     }
 
+    @Test
+    public void deve_somar_com_outro_percentual() {
+        percentual = Percentual.valueOf(10);
+        Percentual resultado = percentual.add(Percentual.valueOf(30));
+        assertThat(resultado).isNotNull().isEqualTo(Percentual.valueOf(40));
+    }
+
     private void assertPercentualIgualA(Percentual percentualIgual) {
         assertThat(percentual).isEqualTo(percentualIgual);
+        assertThat(percentual.hashCode()).isEqualTo(percentualIgual.hashCode());
     }
 
     private void assertPercentualDiferenteDe(Percentual percentualDiferente) {
         assertThat(percentual).isNotEqualTo(percentualDiferente);
+        assertThat(percentual.hashCode()).isNotEqualTo(percentualDiferente.hashCode());
     }
 
 }

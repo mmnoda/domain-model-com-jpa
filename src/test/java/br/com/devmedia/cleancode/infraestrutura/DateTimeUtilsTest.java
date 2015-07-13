@@ -16,7 +16,7 @@ public class DateTimeUtilsTest {
 
     @After
     public void tearDown() {
-        dateTimeUtils.setPadrao();
+        dateTimeUtils.setClockPadrao();
     }
 
     @Test

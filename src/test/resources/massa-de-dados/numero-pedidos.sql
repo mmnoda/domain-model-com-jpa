@@ -1,2 +1,10 @@
 insert into numero_pedido values (100);
+insert into numero_pedido values (200);
+insert into numero_pedido values (300);
+insert into numero_pedido values (400);
+insert into numero_pedido values (500);
+insert into numero_pedido values (600);
+insert into numero_pedido values (700);
+insert into numero_pedido values (800);
+insert into numero_pedido values (900);
 insert into numero_pedido values (1000);
