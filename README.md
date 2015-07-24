@@ -1,3 +1,3 @@
 # README #
 
-Exemplo Clean Code
+Exemplo Domain Model com JPA

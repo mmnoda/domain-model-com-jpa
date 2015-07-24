@@ -1,3 +1,27 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2015 Márcio M. Noda
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
 package br.com.devmedia.cleancode.modelo.cliente;
 
 import br.com.devmedia.cleancode.infraestrutura.DateTimeUtils;
@@ -17,9 +41,6 @@ import static br.com.devmedia.cleancode.modelo.pedido.StatusPedido.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-/**
- *
- */
 public class ClienteTest {
 
     private Cliente cliente;
@@ -78,29 +99,29 @@ public class ClienteTest {
 
     @Test
     public void deve_calcular_tipo_de_cliente_BRONZE_com_base_em_seus_pedidos_faturados() {
-        mockValorTotalDoPedidoFaturado1Como(Dinheiro.valueOf(350));
-        mockValorTotalDoPedidoFaturado2Como(Dinheiro.valueOf(150));
+        mockValorTotalDoPedido1FaturadoComo(Dinheiro.valueOf(350));
+        mockValorTotalDoPedido2FaturadoComo(Dinheiro.valueOf(150));
         assertTipoClienteIgualA(BRONZE);
     }
 
     @Test
     public void deve_calcular_tipo_de_cliente_PRATA_com_base_em_seus_pedidos_faturados() {
-        mockValorTotalDoPedidoFaturado1Como(Dinheiro.valueOf(350));
-        mockValorTotalDoPedidoFaturado2Como(Dinheiro.valueOf(2650));
+        mockValorTotalDoPedido1FaturadoComo(Dinheiro.valueOf(350));
+        mockValorTotalDoPedido2FaturadoComo(Dinheiro.valueOf(2650));
         assertTipoClienteIgualA(PRATA);
     }
 
     @Test
     public void deve_calcular_tipo_de_cliente_OURO_com_base_em_seus_pedidos_faturados() {
-        mockValorTotalDoPedidoFaturado1Como(Dinheiro.valueOf(3500));
-        mockValorTotalDoPedidoFaturado2Como(Dinheiro.valueOf(7500));
+        mockValorTotalDoPedido1FaturadoComo(Dinheiro.valueOf(3500));
+        mockValorTotalDoPedido2FaturadoComo(Dinheiro.valueOf(7500));
         assertTipoClienteIgualA(OURO);
     }
 
     @Test
     public void deve_verificar_se_cliente_MAIOR_de_idade() {
         cliente.setNascimento(DataNascimento.of(1997, 6, 30));
-        dateTimeUtils.fixar(getData30Junho2015());
+        fixarDataCorrenteComo30Junho2015();
         assertIdadeClienteIgualA(Idade.valueOf(18));
         assertClienteMaiorDeIdade();
     }
@@ -108,7 +129,7 @@ public class ClienteTest {
     @Test
     public void deve_verificar_se_cliente_MENOR_de_idade() {
         cliente.setNascimento(DataNascimento.of(2000, 10, 15));
-        dateTimeUtils.fixar(getData30Junho2015());
+        fixarDataCorrenteComo30Junho2015();
         assertIdadeClienteIgualA(Idade.valueOf(14));
         assertClienteMenorDeIdade();
     }
@@ -117,6 +138,10 @@ public class ClienteTest {
     public void deve_manter_o_nome_do_cliente_maiusculo_sem_espacos_no_inicio_ou_no_final() {
         cliente.setNome(Nome.valueOf(" João da Silva "));
         assertThat(cliente.getNome()).isNotNull().isEqualTo(Nome.valueOf("JOÃO DA SILVA"));
+    }
+
+    private void fixarDataCorrenteComo30Junho2015() {
+        dateTimeUtils.fixar(getData30Junho2015());
     }
 
     private void assertTipoClienteIgualA(TipoCliente bronze) {
@@ -151,11 +176,11 @@ public class ClienteTest {
         assertThat(cliente.hashCode()).isEqualTo(outroIgual.hashCode());
     }
 
-    private void mockValorTotalDoPedidoFaturado2Como(Dinheiro valorTotalFinal) {
+    private void mockValorTotalDoPedido2FaturadoComo(Dinheiro valorTotalFinal) {
         when(pedidoFaturado2.getValorTotalFinal()).thenReturn(valorTotalFinal);
     }
 
-    private void mockValorTotalDoPedidoFaturado1Como(Dinheiro valor) {
+    private void mockValorTotalDoPedido1FaturadoComo(Dinheiro valor) {
         when(pedidoFaturado1.getValorTotalFinal()).thenReturn(valor);
     }
 }
