@@ -82,7 +82,14 @@ public class PedidosSetTest {
         calcularTotal();
         verificarExecucaoGetEstadoDosPedidos();
         assertThat(total).isNotNull().isEqualTo(Dinheiro.valueOf(1200));
+    }
 
+    @Test
+    public void deve_criar_copia_defensiva() {
+        PedidosSet copia = pedidosSet.copia();
+        assertPedidosSetIgualA(copia);
+        assertThat(copia).isNotSameAs(pedidosSet);
+        assertThat(copia.pedidos).isNotSameAs(pedidosSet.pedidos);
     }
 
     private void mockPedidosEstadoFaturadoEValorTotalIgualA400() {

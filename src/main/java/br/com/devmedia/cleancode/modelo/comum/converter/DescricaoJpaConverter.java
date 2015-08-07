@@ -28,17 +28,18 @@ import br.com.devmedia.cleancode.modelo.comum.Descricao;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
+import java.util.Optional;
 
 @Converter(autoApply = true)
 public class DescricaoJpaConverter implements AttributeConverter<Descricao, String> {
 
     @Override
     public String convertToDatabaseColumn(Descricao descricao) {
-        return descricao.toString();
+        return Optional.ofNullable(descricao).map(Descricao::toString).orElse("");
     }
 
     @Override
     public Descricao convertToEntityAttribute(String s) {
-        return Descricao.valueOf(s);
+        return Optional.ofNullable(s).map(Descricao::valueOf).orElse(Descricao.VAZIA);
     }
 }

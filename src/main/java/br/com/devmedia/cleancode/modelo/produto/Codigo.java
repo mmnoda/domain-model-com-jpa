@@ -34,6 +34,8 @@ public class Codigo implements Serializable, Comparable<Codigo> {
 
     private static final long serialVersionUID = 6050486045943534588L;
 
+    public final static Codigo VAZIO = new Codigo("");
+
     private final String valor;
 
     private Codigo(String valor) {

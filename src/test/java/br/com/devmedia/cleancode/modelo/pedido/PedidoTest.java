@@ -48,9 +48,9 @@ public class PedidoTest {
     private final Dinheiro valorTotalItem2 = Dinheiro.valueOf(2000);
     private final Dinheiro valorTotalItem3 = Dinheiro.valueOf(600);
     private final Dinheiro valorTotalItem4 = Dinheiro.valueOf(3000);
-    private final Dinheiro somaItens1e2 = valorTotalItem1.add(valorTotalItem2);
-    private final Dinheiro somaItens1e2e3 = valorTotalItem1.add(valorTotalItem2).add(valorTotalItem3);
-    private final Dinheiro somaTodosItens = somaItens1e2e3.add(valorTotalItem4);
+    private final Dinheiro somaItens1e2 = valorTotalItem1.adicionar(valorTotalItem2);
+    private final Dinheiro somaItens1e2e3 = valorTotalItem1.adicionar(valorTotalItem2).adicionar(valorTotalItem3);
+    private final Dinheiro somaTodosItens = somaItens1e2e3.adicionar(valorTotalItem4);
 
     private final ItemPedido item1 = mock(ItemPedido.class);
     private final ItemPedido item2 = mock(ItemPedido.class);

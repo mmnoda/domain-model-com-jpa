@@ -29,17 +29,18 @@ import br.com.devmedia.cleancode.modelo.comum.Dinheiro;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Converter(autoApply = true)
 public class DinheiroJpaConverter implements AttributeConverter<Dinheiro, BigDecimal> {
 
     @Override
     public BigDecimal convertToDatabaseColumn(Dinheiro dinheiro) {
-        return dinheiro.toBigDecimal();
+        return Optional.ofNullable(dinheiro).map(Dinheiro::toBigDecimal).orElse(BigDecimal.ZERO);
     }
 
     @Override
     public Dinheiro convertToEntityAttribute(BigDecimal valor) {
-        return Dinheiro.valueOf(valor);
+        return Optional.ofNullable(valor).map(Dinheiro::valueOf).orElse(Dinheiro.ZERO);
     }
 }

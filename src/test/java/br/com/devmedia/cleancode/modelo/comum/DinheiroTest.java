@@ -68,6 +68,27 @@ public class DinheiroTest {
         assertDinheiroIgualA(Dinheiro.valueOf(30));
     }
 
+    @Test
+    public void deve_comparar_dinheiro_igual() {
+        dinheiro = Dinheiro.valueOf(10.00);
+        int compareTo = dinheiro.compareTo(Dinheiro.valueOf(10));
+        assertThat(compareTo).isEqualTo(0);
+    }
+
+    @Test
+    public void deve_comparar_dinheiro_maior() {
+        dinheiro = Dinheiro.valueOf(123);
+        int compareTo = dinheiro.compareTo(Dinheiro.valueOf(122.99));
+        assertThat(compareTo).isEqualTo(1);
+    }
+
+    @Test
+    public void deve_comparar_dinheiro_menor() {
+        dinheiro = Dinheiro.valueOf(200);
+        int compareTo = dinheiro.compareTo(Dinheiro.valueOf(200.01));
+        assertThat(compareTo).isEqualTo(-1);
+    }
+
     private void assertDinheiroIgualA(Dinheiro dinheiroIgual) {
         assertThat(dinheiro).isEqualTo(dinheiroIgual);
         assertThat(dinheiro.hashCode()).isEqualTo(dinheiroIgual.hashCode());

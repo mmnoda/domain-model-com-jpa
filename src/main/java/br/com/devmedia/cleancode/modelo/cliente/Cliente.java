@@ -157,7 +157,7 @@ public class Cliente implements Serializable {
     }
 
     public PedidosSet getPedidos() {
-        return pedidos;
+        return pedidos.copia();
     }
 
     public DataNascimento getNascimento() {

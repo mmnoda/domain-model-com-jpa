@@ -28,17 +28,20 @@ import br.com.devmedia.cleancode.modelo.pedido.StatusPedido;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
+import java.util.Optional;
+
+import static br.com.devmedia.cleancode.modelo.pedido.StatusPedido.ABERTO;
 
 @Converter(autoApply = true)
 public class StatusPedidoJpaConverter implements AttributeConverter<StatusPedido, Character> {
 
     @Override
     public Character convertToDatabaseColumn(StatusPedido statusPedido) {
-        return statusPedido.getPrefixo();
+        return Optional.ofNullable(statusPedido).map(StatusPedido::getPrefixo).orElse('A');
     }
 
     @Override
     public StatusPedido convertToEntityAttribute(Character prefixo) {
-        return StatusPedido.byPrefixo(prefixo);
+        return Optional.ofNullable(prefixo).map(StatusPedido::byPrefixo).orElse(ABERTO);
     }
 }

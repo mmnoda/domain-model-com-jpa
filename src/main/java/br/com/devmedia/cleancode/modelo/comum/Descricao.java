@@ -34,6 +34,8 @@ public class Descricao implements Serializable, Comparable<Descricao> {
 
     private static final long serialVersionUID = 5026614055708173550L;
 
+    public static final Descricao VAZIA = new Descricao("");
+
     private final String valor;
 
     private Descricao(String valor) {

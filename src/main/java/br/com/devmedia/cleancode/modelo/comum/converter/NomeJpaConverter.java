@@ -28,17 +28,18 @@ import br.com.devmedia.cleancode.modelo.comum.Nome;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
+import java.util.Optional;
 
 @Converter(autoApply = true)
 public class NomeJpaConverter implements AttributeConverter<Nome, String> {
 
     @Override
     public String convertToDatabaseColumn(Nome nome) {
-        return nome.toString();
+        return Optional.ofNullable(nome).map(Nome::toString).orElse("");
     }
 
     @Override
     public Nome convertToEntityAttribute(String s) {
-        return Nome.valueOf(s);
+        return Optional.ofNullable(s).map(Nome::valueOf).orElse(Nome.VAZIO);
     }
 }

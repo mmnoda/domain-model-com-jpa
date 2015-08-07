@@ -165,7 +165,7 @@ public class Pedido implements Serializable {
     }
 
     void calcularValorFinal() {
-        valorTotalFinal = valorTotalItens.add(desconto.negate());
+        valorTotalFinal = valorTotalItens.subtrair(desconto);
     }
 
     void calcularValorTotalItens() {

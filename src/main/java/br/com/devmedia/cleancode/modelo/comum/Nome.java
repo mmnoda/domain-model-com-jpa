@@ -37,14 +37,16 @@ public class Nome implements Serializable, Comparable<Nome> {
 
     private static final long serialVersionUID = -6630993258824215226L;
 
+    public final static Nome VAZIO = new Nome("");
+
     private final String valor;
 
     private Nome(String valor) {
-        checkArgument(!isNullOrEmpty(valor), "Nome nulo ou vazio");
         this.valor = valor.trim().toUpperCase();
     }
 
     public static Nome valueOf(String valor) {
+        checkArgument(!isNullOrEmpty(valor), "Nome nulo ou vazio");
         return new Nome(valor);
     }
 

@@ -64,7 +64,7 @@ public class Dinheiro implements Serializable, Comparable<Dinheiro>, Formattable
     }
 
     public static Dinheiro somar(Dinheiro d1, Dinheiro d2) {
-        return d1.add(d2);
+        return d1.adicionar(d2);
     }
 
     @Override
@@ -95,16 +95,16 @@ public class Dinheiro implements Serializable, Comparable<Dinheiro>, Formattable
         return valor;
     }
 
-    public Dinheiro add(Dinheiro outro) {
+    public Dinheiro adicionar(Dinheiro outro) {
         return valueOf(valor.add(outro.valor));
     }
 
-    public Dinheiro multiply(Quantidade quantidade) {
+    public Dinheiro multiplicar(Quantidade quantidade) {
         return valueOf(valor.multiply(quantidade.toBigDecimal()));
     }
 
-    public Dinheiro negate() {
-        return valueOf(valor.negate());
+    public Dinheiro subtrair(Dinheiro outro) {
+        return valueOf(valor.subtract(outro.valor));
     }
 
     @Override

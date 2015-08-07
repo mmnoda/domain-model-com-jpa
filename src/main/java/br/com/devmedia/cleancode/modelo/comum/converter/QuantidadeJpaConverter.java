@@ -28,17 +28,18 @@ import br.com.devmedia.cleancode.modelo.comum.Quantidade;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
+import java.util.Optional;
 
 @Converter(autoApply = true)
 public class QuantidadeJpaConverter implements AttributeConverter<Quantidade, Long> {
 
     @Override
     public Long convertToDatabaseColumn(Quantidade quantidade) {
-        return quantidade.longValue();
+        return Optional.ofNullable(quantidade).map(Quantidade::longValue).orElse(0L);
     }
 
     @Override
     public Quantidade convertToEntityAttribute(Long valor) {
-        return Quantidade.valueOf(valor);
+        return Optional.ofNullable(valor).map(Quantidade::valueOf).orElse(Quantidade.UM);
     }
 }

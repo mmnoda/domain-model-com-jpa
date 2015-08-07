@@ -103,7 +103,7 @@ public class ItemPedido implements Serializable {
     }
 
     private void calcularValorTotal() {
-        valorTotal = valorUnitario.multiply(quantidade);
+        valorTotal = valorUnitario.multiplicar(quantidade);
     }
 
     public void setProduto(Produto produto) {

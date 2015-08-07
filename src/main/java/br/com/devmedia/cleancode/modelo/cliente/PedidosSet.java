@@ -31,11 +31,11 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.io.Serializable;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
 import static br.com.devmedia.cleancode.modelo.pedido.StatusPedido.FATURADO;
+import static com.google.common.collect.Sets.newLinkedHashSet;
 
 @Embeddable
 public class PedidosSet implements Serializable, Iterable<Pedido> {
@@ -48,12 +48,20 @@ public class PedidosSet implements Serializable, Iterable<Pedido> {
     protected PedidosSet() {
     }
 
+    private PedidosSet(Set<Pedido> pedidos) {
+        this.pedidos = pedidos;
+    }
+
     protected static PedidosSet newPedidosSet() {
         return new PedidosSet().inicializar();
     }
 
+    public static PedidosSet newPedidosSet(Set<Pedido> pedidos) {
+        return new PedidosSet(pedidos);
+    }
+
     private PedidosSet inicializar() {
-        pedidos = new LinkedHashSet<>();
+        pedidos = newLinkedHashSet();
         return this;
     }
 
@@ -80,6 +88,10 @@ public class PedidosSet implements Serializable, Iterable<Pedido> {
         return pedidos.stream().filter(pedido -> pedido.getEstado() == FATURADO).
                 map(Pedido::getValorTotalFinal).
                 reduce(Dinheiro::somar).orElse(Dinheiro.ZERO);
+    }
+
+    public PedidosSet copia() {
+        return newPedidosSet(newLinkedHashSet(pedidos));
     }
 
     @Override

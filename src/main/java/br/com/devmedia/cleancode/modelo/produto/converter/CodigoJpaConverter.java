@@ -28,17 +28,18 @@ import br.com.devmedia.cleancode.modelo.produto.Codigo;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
+import java.util.Optional;
 
 @Converter(autoApply = true)
 public class CodigoJpaConverter implements AttributeConverter<Codigo, String> {
 
     @Override
     public String convertToDatabaseColumn(Codigo codigo) {
-        return codigo.toString();
+        return Optional.ofNullable(codigo).map(Codigo::toString).orElse("");
     }
 
     @Override
     public Codigo convertToEntityAttribute(String s) {
-        return Codigo.valueOf(s);
+        return Optional.ofNullable(s).map(Codigo::valueOf).orElse(Codigo.VAZIO);
     }
 }

@@ -29,17 +29,18 @@ import br.com.devmedia.cleancode.modelo.comum.Percentual;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Converter(autoApply = true)
 public class PercentualJpaConverter implements AttributeConverter<Percentual, BigDecimal> {
 
     @Override
     public BigDecimal convertToDatabaseColumn(Percentual percentual) {
-        return percentual.toBigDecimal();
+        return Optional.ofNullable(percentual).map(Percentual::toBigDecimal).orElse(BigDecimal.ZERO);
     }
 
     @Override
     public Percentual convertToEntityAttribute(BigDecimal valor) {
-        return Percentual.valueOf(valor);
+        return Optional.ofNullable(valor).map(Percentual::valueOf).orElse(Percentual.ZERO);
     }
 }
