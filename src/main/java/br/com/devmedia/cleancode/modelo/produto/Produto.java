@@ -34,6 +34,9 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.isNull;
+
 @Entity
 public class Produto implements Serializable {
 
@@ -70,8 +73,8 @@ public class Produto implements Serializable {
         this.preco = builder.preco;
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public static Builder builder(Codigo codigo, Nome nome, Descricao descricao) {
+        return new Builder(codigo, nome, descricao);
     }
 
     @Override
@@ -144,22 +147,17 @@ public class Produto implements Serializable {
 
         private Dinheiro preco = Dinheiro.ZERO;
 
-        private Builder() {
-        }
-
-        public Builder codigo(Codigo codigo) {
+        private Builder(Codigo codigo, Nome nome, Descricao descricao) {
+            validar(codigo, nome, descricao);
             this.codigo = codigo;
-            return this;
-        }
-
-        public Builder nome(Nome nome) {
             this.nome = nome;
-            return this;
+            this.descricao = descricao;
         }
 
-        public Builder descricao(Descricao descricao) {
-            this.descricao = descricao;
-            return this;
+        private void validar(Codigo codigo, Nome nome, Descricao descricao) {
+            checkArgument(!isNull(codigo), "Código nulo");
+            checkArgument(!isNull(nome), "Nome nulo");
+            checkArgument(!isNull(descricao), "Descrição nulo");
         }
 
         public Builder preco(Dinheiro preco) {

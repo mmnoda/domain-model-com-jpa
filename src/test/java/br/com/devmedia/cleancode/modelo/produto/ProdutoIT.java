@@ -55,8 +55,9 @@ public class ProdutoIT {
     @Test
     @Transactional
     public void deve_salvar_produto() {
-        produto = Produto.builder().codigo(Codigo.valueOf("A1A2A3")).descricao(Descricao.valueOf("Teste")).
-                nome(Nome.valueOf("Produto A")).preco(Dinheiro.valueOf(10)).build();
+        produto = Produto.builder(Codigo.valueOf("A1A2A3"), Nome.valueOf("Produto A"), Descricao.valueOf("Teste"))
+                .preco(Dinheiro.valueOf(10))
+                .build();
         em.persist(produto);
         assertThat(produto.getId()).isNotNull();
         assertThat(produto.version).isNotNull().isEqualTo(0);
