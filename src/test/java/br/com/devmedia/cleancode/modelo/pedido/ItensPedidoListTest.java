@@ -31,6 +31,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static br.com.devmedia.cleancode.modelo.cliente.DescontoClienteConstants.TRES_MIL;
 import static br.com.devmedia.cleancode.modelo.pedido.ItemPedido.newItemPedido;
 import static br.com.devmedia.cleancode.modelo.pedido.ItensPedidoList.newItensPedidoList;
 import static com.google.common.collect.Lists.newArrayList;
@@ -81,7 +82,7 @@ public class ItensPedidoListTest {
     @Test
     public void deve_encontrar_valor_item_maior_ou_igual_a_3000() {
         mockValorUnitarioDosItensIgualA6000();
-        boolean possuiItemComValorMaiorOuIgualQue3000 = itensPedidoList.possuiItemComValorMaiorOuIgualQue3000();
+        boolean possuiItemComValorMaiorOuIgualQue3000 = itensPedidoList.possuiItemComValorMaiorOuIgualQue(TRES_MIL);
         verifyExecucaoValorUnitarios();
         assertThat(possuiItemComValorMaiorOuIgualQue3000).isTrue();
     }
@@ -89,7 +90,7 @@ public class ItensPedidoListTest {
     @Test
     public void deve_NAO_encontrar_valor_item_maior_ou_igual_a_3000() {
         mockValorUnitarioDosItensIgualA3000();
-        boolean possuiItemComValorMaiorOuIgualQue3000 = itensPedidoList.possuiItemComValorMaiorOuIgualQue3000();
+        boolean possuiItemComValorMaiorOuIgualQue3000 = itensPedidoList.possuiItemComValorMaiorOuIgualQue(TRES_MIL);
         verifyExecucaoValorUnitarios();
         assertThat(possuiItemComValorMaiorOuIgualQue3000).isFalse();
     }

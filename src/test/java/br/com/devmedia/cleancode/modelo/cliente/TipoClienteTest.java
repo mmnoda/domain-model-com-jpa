@@ -198,7 +198,7 @@ public class TipoClienteTest {
     }
 
     private void verifyPossuiItemComValorMaiorOuIgualQue3000() {
-        verify(pedido).possuiItemComValorMaiorOuIgualQue3000();
+        verify(pedido).possuiItemComValorMaiorOuIgualQue(TRES_MIL);
     }
 
     private void identificar() {
@@ -206,7 +206,7 @@ public class TipoClienteTest {
     }
 
     private void mockPossuiItemComValorMaiorOuIgualQue3000Retorna(boolean resultado) {
-        when(pedido.possuiItemComValorMaiorOuIgualQue3000()).thenReturn(resultado);
+        when(pedido.possuiItemComValorMaiorOuIgualQue(TRES_MIL)).thenReturn(resultado);
     }
 
     private void mockValorTotalItensDoPedidoIgualA(Dinheiro valorEsperado) {

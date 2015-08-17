@@ -160,8 +160,8 @@ public class Pedido implements Serializable {
         desconto = percentualDesconto.calcular(valorTotalItens);
     }
 
-    public boolean possuiItemComValorMaiorOuIgualQue3000() {
-        return itens.possuiItemComValorMaiorOuIgualQue3000();
+    public boolean possuiItemComValorMaiorOuIgualQue(Dinheiro valor) {
+        return itens.possuiItemComValorMaiorOuIgualQue(valor);
     }
 
     void calcularValorFinal() {
@@ -219,4 +219,5 @@ public class Pedido implements Serializable {
     public NumeroPedido getNumero() {
         return numero;
     }
+
 }

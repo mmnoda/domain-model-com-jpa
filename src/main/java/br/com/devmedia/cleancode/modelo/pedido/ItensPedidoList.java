@@ -35,8 +35,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-import static br.com.devmedia.cleancode.modelo.cliente.DescontoClienteConstants.TRES_MIL;
-
 @Embeddable
 public class ItensPedidoList implements Serializable, Iterable<ItemPedido> {
 
@@ -93,8 +91,8 @@ public class ItensPedidoList implements Serializable, Iterable<ItemPedido> {
         return itens.iterator();
     }
 
-    public boolean possuiItemComValorMaiorOuIgualQue3000() {
-        return itens.stream().anyMatch(item -> item.getValorUnitario().compareTo(TRES_MIL) >= 0);
+    public boolean possuiItemComValorMaiorOuIgualQue(Dinheiro valor) {
+        return itens.stream().anyMatch(item -> item.getValorUnitario().compareTo(valor) >= 0);
     }
 
     public Dinheiro calcularValorTotalItens() {

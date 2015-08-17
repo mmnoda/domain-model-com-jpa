@@ -56,19 +56,26 @@ public enum TipoCliente {
     PRATA() {
         @Override
         public Percentual calcularPercentualDesconto(Pedido pedido) {
+            final Percentual percentualDesconto = getPercentualDescontoComBaseNoValorTotalDosItens(pedido);
 
-            Percentual percentualDesconto = possuiValorTotalItensMaiorQue3000(pedido) ?
-                    _5_PORCENTO : _3_PORCENTO;
+            return possuiItemComValorMaiorOuIgualQue3000(pedido) ?
+                    somar3PorcentoAdicionaisNoDesconto(percentualDesconto) : percentualDesconto;
+        }
 
-            if (pedido.possuiItemComValorMaiorOuIgualQue3000()) {
-                percentualDesconto = percentualDesconto.add(_3_PORCENTO);
-            }
+        private Percentual somar3PorcentoAdicionaisNoDesconto(Percentual percentualDesconto) {
+            return percentualDesconto.add(_3_PORCENTO);
+        }
 
-            return percentualDesconto;
+        private boolean possuiItemComValorMaiorOuIgualQue3000(Pedido pedido) {
+            return pedido.possuiItemComValorMaiorOuIgualQue(TRES_MIL);
+        }
+
+        private Percentual getPercentualDescontoComBaseNoValorTotalDosItens(Pedido pedido) {
+            return possuiValorTotalItensMaiorQue3000(pedido) ? _5_PORCENTO : _3_PORCENTO;
         }
 
         private boolean possuiValorTotalItensMaiorQue3000(Pedido pedido) {
-            return  pedido.getValorTotalItens().compareTo(TRES_MIL) >= 0;
+            return pedido.getValorTotalItens().compareTo(TRES_MIL) >= 0;
         }
 
         @Override
