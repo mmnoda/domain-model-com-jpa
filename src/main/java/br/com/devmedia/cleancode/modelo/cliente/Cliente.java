@@ -52,10 +52,11 @@ public class Cliente implements Serializable {
     Integer version;
 
     @NotNull
-    @Column(unique = true)
+    @Column(unique = true, length = 11)
     private Cpf cpf;
 
     @NotNull
+    @Column(length = 150)
     private Nome nome;
 
     @NotNull

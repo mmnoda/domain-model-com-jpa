@@ -52,8 +52,9 @@ public class ProdutoTest {
 
     @Test
     public void deve_construir_com_builder() {
-        produto = Produto.builder().codigo(getCodigo1()).nome(banana).
-                descricao(fruta).preco(preco).build();
+        produto = Produto.builder(getCodigo1(), banana, fruta)
+                .preco(preco)
+                .build();
         assertProdutoConstruidoComSucesso();
     }
 
