@@ -30,7 +30,7 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-public class Codigo implements Serializable, Comparable<Codigo> {
+public final class Codigo implements Serializable, Comparable<Codigo> {
 
     private static final long serialVersionUID = 6050486045943534588L;
 

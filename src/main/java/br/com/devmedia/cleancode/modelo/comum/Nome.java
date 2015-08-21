@@ -33,7 +33,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 /**
  *
  */
-public class Nome implements Serializable, Comparable<Nome> {
+public final class Nome implements Serializable, Comparable<Nome> {
 
     private static final long serialVersionUID = -6630993258824215226L;
 

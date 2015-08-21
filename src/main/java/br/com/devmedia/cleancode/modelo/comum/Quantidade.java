@@ -36,7 +36,7 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 
-public class Quantidade implements Serializable, Comparable<Quantidade>, Formattable {
+public final class Quantidade implements Serializable, Comparable<Quantidade>, Formattable {
 
     private static final long serialVersionUID = 4868785344958171893L;
 

@@ -33,7 +33,7 @@ import static br.com.devmedia.cleancode.infraestrutura.ArredondamentoConstants.C
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 
-public class Percentual implements Serializable, Comparable<Percentual> {
+public final class Percentual implements Serializable, Comparable<Percentual> {
 
     private static final long serialVersionUID = 1394408518476318914L;
 

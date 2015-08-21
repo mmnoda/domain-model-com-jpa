@@ -38,7 +38,7 @@ import static br.com.devmedia.cleancode.infraestrutura.ArredondamentoConstants.C
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 
-public class Dinheiro implements Serializable, Comparable<Dinheiro>, Formattable {
+public final class Dinheiro implements Serializable, Comparable<Dinheiro>, Formattable {
 
     private static final long serialVersionUID = -6881965660274224561L;
 

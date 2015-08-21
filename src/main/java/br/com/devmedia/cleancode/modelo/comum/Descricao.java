@@ -30,7 +30,7 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-public class Descricao implements Serializable, Comparable<Descricao> {
+public final class Descricao implements Serializable, Comparable<Descricao> {
 
     private static final long serialVersionUID = 5026614055708173550L;
 
