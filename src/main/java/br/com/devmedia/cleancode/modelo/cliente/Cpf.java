@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-public class Cpf implements Serializable, Comparable<Cpf>, Formattable {
+public final class Cpf implements Serializable, Comparable<Cpf>, Formattable {
 
     private static final long serialVersionUID = -614188801416251816L;
 
@@ -42,10 +42,13 @@ public class Cpf implements Serializable, Comparable<Cpf>, Formattable {
 
     private static final String FORMATO_CPF = "$1.$2.$3-$4";
 
+    private static final int[] PESOS_DIGITO_1 = {10, 9, 8, 7, 6, 5, 4, 3, 2};
+    private static final int[] PESOS_DIGITO_2 = {11, 10, 9, 8, 7, 6, 5, 4, 3};
+
     private final String valor;
 
     private Cpf(String valor) {
-        checkArgument(valor.matches("\\d{11}"), "CPF inválido");
+        checkArgument(valor.matches("\\d{11}"), "Formato CPF inválido");
         this.valor = valor;
     }
 

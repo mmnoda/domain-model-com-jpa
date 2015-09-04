@@ -34,8 +34,6 @@ public class DinheiroTest {
 
     private Dinheiro dinheiro;
 
-    private String formatado;
-
     @Test
     public void deve_ser_igual_ao_proprio() {
         dinheiro = Dinheiro.valueOf(50);
@@ -52,7 +50,7 @@ public class DinheiroTest {
     @Test
     public void deve_formatar_corretamente() {
         dinheiro = Dinheiro.valueOf(123456.89);
-        formatado = String.format("%s", dinheiro);
+        String formatado = String.format("%s", dinheiro);
         assertThat(formatado).isNotNull().isEqualTo("123.456,89");
     }
 

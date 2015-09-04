@@ -31,7 +31,7 @@ import static br.com.devmedia.cleancode.modelo.cliente.DescontoClienteConstants.
 
 public enum TipoCliente {
 
-    BRONZE() {
+    BRONZE {
         @Override
         public Percentual calcularPercentualDesconto(Pedido pedido) {
             return possuiValorTotalItensMaiorQue500(pedido) ?
@@ -53,7 +53,7 @@ public enum TipoCliente {
         }
     },
 
-    PRATA() {
+    PRATA {
         @Override
         public Percentual calcularPercentualDesconto(Pedido pedido) {
             final Percentual percentualDesconto = getPercentualDescontoComBaseNoValorTotalDosItens(pedido);
@@ -89,7 +89,7 @@ public enum TipoCliente {
         }
     },
 
-    OURO() {
+    OURO {
         @Override
         public Percentual calcularPercentualDesconto(Pedido pedido) {
             return _10_PORCENTO;
@@ -106,7 +106,7 @@ public enum TipoCliente {
         }
     },
 
-    SEM_CLASSIFICACAO() {
+    SEM_CLASSIFICACAO {
         @Override
         public Percentual calcularPercentualDesconto(Pedido pedido) {
             return Percentual.ZERO;

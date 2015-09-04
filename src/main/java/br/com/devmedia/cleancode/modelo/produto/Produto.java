@@ -139,11 +139,11 @@ public class Produto implements Serializable {
 
     public static class Builder {
 
-        private Codigo codigo;
+        private final Codigo codigo;
 
-        private Nome nome;
+        private final Nome nome;
 
-        private Descricao descricao;
+        private final Descricao descricao;
 
         private Dinheiro preco = Dinheiro.ZERO;
 
