@@ -161,6 +161,7 @@ public class Produto implements Serializable {
         }
 
         public Builder preco(Dinheiro preco) {
+            checkArgument(!isNull(preco), "Preço nulo");
             this.preco = preco;
             return this;
         }
