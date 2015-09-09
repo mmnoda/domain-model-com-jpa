@@ -66,7 +66,7 @@ public class Produto implements Serializable {
     protected Produto() {
     }
 
-    public Produto(Builder builder) {
+    private Produto(Builder builder) {
         this.codigo = builder.codigo;
         this.nome = builder.nome;
         this.descricao = builder.descricao;
@@ -161,6 +161,7 @@ public class Produto implements Serializable {
         }
 
         public Builder preco(Dinheiro preco) {
+            checkArgument(!isNull(preco), "Preço nulo");
             this.preco = preco;
             return this;
         }
